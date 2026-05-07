@@ -1,7 +1,40 @@
+import Navbar from './components/Navbar'
+
+const SECTIONS = [
+  { id: 'mission',        label: 'Mission' },
+  { id: 'product',        label: 'Product' },
+  { id: 'pricing',        label: 'Pricing' },
+  { id: 'request-a-demo', label: 'Request a Demo' },
+]
+
 export default function App() {
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Landing page sections go here */}
+    <div className="min-h-screen bg-white text-black" style={{ fontFamily: 'Geist, sans-serif', fontWeight: 500 }}>
+      <Navbar />
+
+      {/* Hero */}
+      <section className="flex flex-col items-center justify-center min-h-screen text-center px-6 pt-16">
+        <h1 className="text-6xl tracking-tight mb-6" style={{ fontWeight: 500 }}>
+          Placeholder Hero
+        </h1>
+        <p className="text-xl text-black/50 max-w-xl">
+          Tagline goes here.
+        </p>
+      </section>
+
+      {/* Content sections */}
+      {SECTIONS.map(({ id, label }) => (
+        <section
+          key={id}
+          id={id}
+          className="flex flex-col items-center justify-center min-h-screen border-t border-black/8 px-6 text-center"
+        >
+          <h2 className="text-4xl tracking-tight mb-4" style={{ fontWeight: 500 }}>
+            {label}
+          </h2>
+          <p className="text-base text-black/40">Content coming soon.</p>
+        </section>
+      ))}
     </div>
   )
 }

@@ -1,3 +1,4 @@
+@import "@fontsource/geist/500.css";
 @import "tailwindcss";
 
 *, *::before, *::after {
@@ -8,4 +9,12 @@
 
 html {
   scroll-behavior: smooth;
+  font-family: 'Geist', sans-serif;
+  font-weight: 500;
+}
+
+body {
+  background: #fff;
+  color: #000;
+  -webkit-font-smoothing: antialiased;
 }
