@@ -1,4 +1,3 @@
-import GradualBlur from './GradualBlur'
 import logo from '/trulylogo.png'
 
 const NAV_LINKS = ['Mission', 'Product', 'Pricing', 'Request a Demo']
@@ -6,34 +5,17 @@ const NAV_LINKS = ['Mission', 'Product', 'Pricing', 'Request a Demo']
 export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
-      {/* Background blur — sits behind everything, never overlaps content */}
+      {/* Frosted blur that fades naturally into the page below */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10"
+        className="pointer-events-none absolute top-0 -z-10 w-full backdrop-blur-2xl"
         style={{
-          backdropFilter: 'blur(14px)',
-          WebkitBackdropFilter: 'blur(14px)',
-          backgroundColor: 'rgba(255,255,255,0.75)',
-          borderBottom: '1px solid rgba(0,0,0,0.07)',
+          height: '6rem',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.00) 100%)',
+          maskImage: 'linear-gradient(to bottom, black 50%, rgba(0,0,0,0.7) 72%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 50%, rgba(0,0,0,0.7) 72%, transparent 100%)',
         }}
       />
-
-      {/* GradualBlur on the background div only — scoped so it never touches nav text */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 pointer-events-none"
-      >
-        <GradualBlur
-          target="parent"
-          position="bottom"
-          height="2.5rem"
-          strength={1}
-          divCount={6}
-          curve="bezier"
-          opacity={0.5}
-          zIndex={0}
-        />
-      </div>
 
       {/* Nav links — centered relative to the full viewport width */}
       <nav className="absolute inset-0 flex items-center justify-center gap-8 pointer-events-none">
@@ -41,7 +23,7 @@ export default function Navbar() {
           <a
             key={link}
             href={`#${link.toLowerCase().replace(/\s+/g, '-')}`}
-            className="text-sm text-black/70 hover:text-black transition-colors duration-150 no-underline pointer-events-auto"
+            className="relative text-sm text-black/60 no-underline pointer-events-auto transition-colors duration-200 hover:text-black after:absolute after:left-0 after:-bottom-0.5 after:h-px after:w-0 after:bg-black after:transition-all after:duration-200 hover:after:w-full"
             style={{ fontFamily: 'Geist, sans-serif', fontWeight: 500 }}
           >
             {link}
@@ -52,12 +34,12 @@ export default function Navbar() {
       {/* Logo + brand — absolutely positioned so it doesn't affect nav centering */}
       <a
         href="/"
-        className="absolute flex items-center gap-2.5 no-underline"
+        className="absolute flex items-center gap-1.5 no-underline"
         style={{ left: '10%', top: '50%', transform: 'translateY(-50%)' }}
       >
-        <img src={logo} alt="Truly logo" className="h-7 w-auto" />
+        <img src={logo} alt="Truly logo" className="h-9 w-auto" />
         <span
-          className="text-black text-lg tracking-tight"
+          className="text-black text-xl tracking-tight"
           style={{ fontFamily: 'Geist, sans-serif', fontWeight: 500 }}
         >
           Truly
