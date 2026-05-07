@@ -1,4 +1,5 @@
 import Navbar from './components/Navbar'
+import Hero from './components/Hero'
 import Footer from './components/Footer'
 
 const SECTIONS = [
@@ -13,15 +14,7 @@ export default function App() {
     <div className="min-h-screen bg-white text-black" style={{ fontFamily: 'Geist, sans-serif', fontWeight: 500 }}>
       <Navbar />
 
-      {/* Hero */}
-      <section className="flex flex-col items-center justify-center min-h-screen text-center px-6 pt-16">
-        <h1 className="text-6xl tracking-tight mb-6" style={{ fontWeight: 500 }}>
-          Placeholder Hero
-        </h1>
-        <p className="text-xl text-black/50 max-w-xl">
-          Tagline goes here.
-        </p>
-      </section>
+      <Hero />
 
       {/* Content sections */}
       {SECTIONS.map(({ id, label }) => (
