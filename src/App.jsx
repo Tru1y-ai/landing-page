@@ -1,4 +1,5 @@
 import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 
 const SECTIONS = [
   { id: 'mission',        label: 'Mission' },
@@ -35,6 +36,7 @@ export default function App() {
           <p className="text-base text-black/40">Content coming soon.</p>
         </section>
       ))}
+      <Footer />
     </div>
   )
 }
