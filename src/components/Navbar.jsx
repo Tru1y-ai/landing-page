@@ -39,7 +39,7 @@ export default function Navbar() {
       >
         <img src={logo} alt="Truly logo" className="h-9 w-auto" />
         <span
-          className="text-black text-xl tracking-tight"
+          className="text-black text-2xl tracking-tight"
           style={{ fontFamily: 'Geist, sans-serif', fontWeight: 500 }}
         >
           Truly
