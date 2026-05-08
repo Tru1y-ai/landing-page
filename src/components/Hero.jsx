@@ -10,7 +10,7 @@ export default function Hero() {
     <section className="relative flex flex-col items-center justify-center min-h-screen text-center px-6 pt-36 pb-16 overflow-hidden">
 
       {/* Eyebrow */}
-      <div className="mb-10">
+      <div className="mb-10 flex justify-center">
         <SplitText
           text="The future of technical hiring"
           tag="p"
@@ -41,7 +41,7 @@ export default function Hero() {
       </div>
 
       {/* Sub-headline */}
-      <div className="mb-24 max-w-xl">
+      <div className="mb-24 max-w-xl flex justify-center">
         <SplitText
           text="Truly replaces outdated interview tools with AI-native take-home assessments that evaluate how candidates actually think and work — not just what they memorize."
           tag="p"
