@@ -1,16 +1,9 @@
 import logo from '/trulylogo.png'
 
 const LINKS = {
-  Navigation: [
-    { label: 'Mission',        href: '#mission' },
-    { label: 'What We Do',     href: '#what-we-do' },
-    { label: 'Request a Demo', href: '#request-a-demo' },
-  ],
-  Company: [
-    { label: 'About',   href: '#' },
-    { label: 'Careers', href: '#' },
-    { label: 'Blog',    href: '#' },
-    { label: 'Press',   href: '#' },
+  Resources: [
+    { label: 'Manifesto', href: '#' },
+    { label: 'Press',     href: '#' },
   ],
   Support: [
     { label: 'Help Center', href: '#' },
@@ -88,7 +81,7 @@ export default function Footer() {
           </div>
 
           {/* Link columns — right 50% */}
-          <nav className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 lg:mt-0 lg:w-1/2" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', paddingLeft: '3rem' }}>
+          <nav className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 lg:mt-0 lg:w-1/2" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', paddingLeft: '3rem' }}>
             {Object.entries(LINKS).map(([section, links]) => (
               <div key={section}>
                 <h3 className="text-lg text-black tracking-tight mb-3">{section}</h3>
