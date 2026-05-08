@@ -1,13 +1,11 @@
-import FallingText from './FallingText'
 import SplitText from './SplitText'
-import ScrollFloat from './ScrollFloat'
 import GradientText from './GradientText'
-
-const OLD_PLATFORMS = 'HackerRank CodeSignal HireVue take-home tests generic assessments one-size-fits-all interviews'
+import CardSwap, { Card } from './CardSwap'
+import FuzzyText from './FuzzyText'
 
 export default function Hero() {
   return (
-    <section className="relative flex flex-col items-center justify-center min-h-screen text-center px-6 pt-36 pb-16 overflow-hidden">
+    <section className="relative flex flex-col items-center justify-center min-h-screen text-center px-6 pb-16 overflow-hidden" style={{ paddingTop: '10rem' }}>
 
       {/* Eyebrow */}
       <div className="mb-10 flex justify-center">
@@ -58,19 +56,150 @@ export default function Hero() {
         />
       </div>
 
-      {/* FallingText */}
-      <div style={{ height: '220px' }} className="w-full max-w-4xl">
-        <FallingText
-          text={OLD_PLATFORMS}
-          highlightWords={['HackerRank', 'CodeSignal', 'HireVue']}
-          trigger="scroll"
-          gravity={0.7}
-          fontSize="1.6rem"
-          mouseConstraintStiffness={0.7}
-          wordSpacing="8px"
-          backgroundColor="transparent"
-          wireframes={false}
-        />
+      {/* Two-column: FuzzyText left, CardSwap right */}
+      <div className="w-full max-w-6xl flex items-center gap-12 mt-4">
+
+        {/* Left — FuzzyText messaging */}
+        <div className="flex-1 text-left flex flex-col gap-1 min-w-0">
+          <FuzzyText
+            fontSize="1.1rem"
+            fontWeight={500}
+            color="#000"
+            baseIntensity={0.08}
+            hoverIntensity={0.35}
+            enableHover
+          >
+            No more
+          </FuzzyText>
+          <FuzzyText
+            fontSize="clamp(2.8rem, 5vw, 4.5rem)"
+            fontWeight={900}
+            color="#000"
+            baseIntensity={0.12}
+            hoverIntensity={0.45}
+            enableHover
+            glitchMode
+            glitchInterval={3500}
+            glitchDuration={180}
+          >
+            Stupid
+          </FuzzyText>
+          <FuzzyText
+            fontSize="clamp(1.5rem, 2.5vw, 2.2rem)"
+            fontWeight={800}
+            color="#000"
+            baseIntensity={0.1}
+            hoverIntensity={0.4}
+            enableHover
+          >
+            Technical Tests.
+          </FuzzyText>
+          <div style={{ marginTop: '1.5rem' }}>
+            <FuzzyText
+              fontSize="1rem"
+              fontWeight={500}
+              color="#00000088"
+              baseIntensity={0.06}
+              hoverIntensity={0.3}
+              enableHover
+            >
+              It is time to show
+            </FuzzyText>
+          </div>
+          <FuzzyText
+            fontSize="clamp(1.6rem, 2.8vw, 2.5rem)"
+            fontWeight={900}
+            color="#000"
+            baseIntensity={0.1}
+            hoverIntensity={0.42}
+            enableHover
+            gradient={['#7c3aed', '#db2777', '#2563eb']}
+          >
+            how Truly worth you are.
+          </FuzzyText>
+        </div>
+
+        {/* Right — CardSwap */}
+        <div className="flex-1 relative" style={{ height: '420px' }}>
+        <CardSwap
+          cardDistance={55}
+          verticalDistance={65}
+          delay={4000}
+          pauseOnHover
+          skewAmount={5}
+          easing="elastic"
+          width={440}
+          height={280}
+        >
+          <Card>
+            <div className="flex flex-col justify-between h-full p-7 text-left">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
+                  <span className="text-green-400 text-sm font-bold">HR</span>
+                </div>
+                <span className="text-white/50 text-xs uppercase tracking-widest">HackerRank</span>
+              </div>
+              <div>
+                <p className="text-white/30 text-xs mb-2 uppercase tracking-wider">Question 3 of 5 · 45 min left</p>
+                <p className="text-white text-sm leading-relaxed mb-3">
+                  Given an array of integers, return the indices of the two numbers that add up to a target sum.
+                </p>
+                <div className="bg-white/5 rounded-lg p-3 font-mono text-xs text-white/40">
+                  Input: nums = [2,7,11,15], target = 9<br />
+                  Output: [0,1]
+                </div>
+              </div>
+              <p className="text-white/25 text-xs mt-4 italic">Does this really show how they'll perform on your team?</p>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="flex flex-col justify-between h-full p-7 text-left">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                  <span className="text-blue-400 text-sm font-bold">LC</span>
+                </div>
+                <span className="text-white/50 text-xs uppercase tracking-widest">LeetCode</span>
+              </div>
+              <div>
+                <p className="text-white/30 text-xs mb-2 uppercase tracking-wider">Hard · Algorithms · Timer: 01:12:44</p>
+                <p className="text-white text-sm leading-relaxed mb-3">
+                  You are given a string s and an integer k. Find the length of the longest substring containing at most k distinct characters.
+                </p>
+                <div className="bg-white/5 rounded-lg p-3 font-mono text-xs text-white/40">
+                  <span className="text-purple-400">def</span> lengthOfLongestSubstringKDistinct(s, k):<br />
+                  &nbsp;&nbsp;<span className="text-white/20">pass</span>
+                </div>
+              </div>
+              <p className="text-white/25 text-xs mt-4 italic">Memorizing patterns ≠ engineering ability.</p>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="flex flex-col justify-between h-full p-7 text-left">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center">
+                  <span className="text-orange-400 text-sm font-bold">CS</span>
+                </div>
+                <span className="text-white/50 text-xs uppercase tracking-widest">CodeSignal</span>
+              </div>
+              <div>
+                <p className="text-white/30 text-xs mb-2 uppercase tracking-wider">General Coding Assessment · Score: ???</p>
+                <p className="text-white text-sm leading-relaxed mb-3">
+                  Task 4: Implement a function that checks whether a given string is a valid IPv4 address using only basic string operations.
+                </p>
+                <div className="bg-white/5 rounded-lg p-3 font-mono text-xs text-white/40">
+                  <span className="text-orange-400/60">// 3 more tasks remaining</span><br />
+                  <span className="text-white/20">function solution(inputString) {'{'}</span><br />
+                  &nbsp;&nbsp;<span className="text-white/20">{'}'}</span>
+                </div>
+              </div>
+              <p className="text-white/25 text-xs mt-4 italic">A score doesn't tell you how they think.</p>
+            </div>
+          </Card>
+        </CardSwap>
+        </div>
+
       </div>
 
     </section>
