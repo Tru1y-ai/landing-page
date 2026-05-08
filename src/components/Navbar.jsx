@@ -8,7 +8,7 @@ export default function Navbar() {
     <header className="fixed top-4 left-0 right-0 z-50 flex justify-center pointer-events-none">
       <GlassSurface
         width="auto"
-        height={56}
+        height={60}
         borderRadius={999}
         backgroundOpacity={0.18}
         saturation={1.4}
@@ -17,7 +17,7 @@ export default function Navbar() {
         blur={12}
         distortionScale={-160}
         className="pointer-events-auto"
-        style={{ minWidth: 900, paddingLeft: '2rem', paddingRight: '2rem' }}
+        style={{ minWidth: 1100, paddingLeft: '2rem', paddingRight: '2rem' }}
       >
         <div className="relative flex items-center w-full">
           {/* Logo + brand */}
