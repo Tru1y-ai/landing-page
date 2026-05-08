@@ -1,6 +1,6 @@
 import logo from '/trulylogo.png'
 
-const NAV_LINKS = ['Mission', 'Product', 'Pricing', 'Request a Demo']
+const NAV_LINKS = ['Mission', 'What We Do', 'Request a Demo']
 
 export default function Navbar() {
   return (

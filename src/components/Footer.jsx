@@ -1,10 +1,9 @@
 import logo from '/trulylogo.png'
 
 const LINKS = {
-  Product: [
+  Navigation: [
     { label: 'Mission',        href: '#mission' },
-    { label: 'Product',        href: '#product' },
-    { label: 'Pricing',        href: '#pricing' },
+    { label: 'What We Do',     href: '#what-we-do' },
     { label: 'Request a Demo', href: '#request-a-demo' },
   ],
   Company: [

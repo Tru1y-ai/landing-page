@@ -4,8 +4,7 @@ import Footer from './components/Footer'
 
 const SECTIONS = [
   { id: 'mission',        label: 'Mission' },
-  { id: 'product',        label: 'Product' },
-  { id: 'pricing',        label: 'Pricing' },
+  { id: 'what-we-do', label: 'What We Do' },
   { id: 'request-a-demo', label: 'Request a Demo' },
 ]
 
