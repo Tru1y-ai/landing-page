@@ -1,4 +1,5 @@
 import SplitText from './SplitText'
+import FuzzyText from './FuzzyText'
 
 const PILLARS = [
   {
@@ -23,7 +24,7 @@ export default function MissionSection() {
     <section id="mission" className="border-t border-black/8" style={{ padding: '7rem 0' }}>
 
       {/* Header */}
-      <div style={{ maxWidth: '860px', margin: '0 auto', padding: '0 2.5rem', marginBottom: '5rem' }} className="flex flex-col items-center text-center">
+      <div style={{ maxWidth: '860px', margin: '0 auto', padding: '0 2.5rem' }} className="flex flex-col items-center text-center">
         <p className="text-xs uppercase tracking-[0.2em] text-black/35 mb-7">Our Mission</p>
         <div className="flex justify-center w-full">
           <SplitText
@@ -44,6 +45,66 @@ export default function MissionSection() {
         <p className="mt-7 text-lg text-black/45 leading-relaxed max-w-xl">
           AI is revolutionizing how work gets done. We're building the infrastructure to evaluate talent the right way — thoughtful, fair, and built for the modern workforce.
         </p>
+      </div>
+
+      {/* FuzzyText — right after mission header */}
+      <div className="flex flex-col items-center gap-1" style={{ margin: '5rem 0' }}>
+        <FuzzyText
+          fontSize="1.1rem"
+          fontWeight={500}
+          color="#000"
+          baseIntensity={0.08}
+          hoverIntensity={0.35}
+          enableHover
+        >
+          No more
+        </FuzzyText>
+        <FuzzyText
+          fontSize="clamp(2.8rem, 5vw, 4.5rem)"
+          fontWeight={900}
+          color="#000"
+          baseIntensity={0.12}
+          hoverIntensity={0.45}
+          enableHover
+          glitchMode
+          glitchInterval={3500}
+          glitchDuration={180}
+        >
+          Stupid
+        </FuzzyText>
+        <FuzzyText
+          fontSize="clamp(1.5rem, 2.5vw, 2.2rem)"
+          fontWeight={800}
+          color="#000"
+          baseIntensity={0.1}
+          hoverIntensity={0.4}
+          enableHover
+        >
+          Technical Tests.
+        </FuzzyText>
+        <div style={{ marginTop: '1.5rem' }}>
+          <FuzzyText
+            fontSize="1rem"
+            fontWeight={500}
+            color="#00000088"
+            baseIntensity={0.06}
+            hoverIntensity={0.3}
+            enableHover
+          >
+            It is time to show
+          </FuzzyText>
+        </div>
+        <FuzzyText
+          fontSize="clamp(1.6rem, 2.8vw, 2.5rem)"
+          fontWeight={900}
+          color="#000"
+          baseIntensity={0.1}
+          hoverIntensity={0.42}
+          enableHover
+          gradient={['#7c3aed', '#db2777', '#2563eb']}
+        >
+          how Truly worth you are.
+        </FuzzyText>
       </div>
 
       {/* Pillars — full bleed grid */}

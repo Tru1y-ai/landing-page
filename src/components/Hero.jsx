@@ -1,7 +1,6 @@
 import SplitText from './SplitText'
 import GradientText from './GradientText'
 import CardSwap, { Card } from './CardSwap'
-import FuzzyText from './FuzzyText'
 
 export default function Hero() {
   return (
@@ -56,72 +55,10 @@ export default function Hero() {
         />
       </div>
 
-      {/* Two-column: FuzzyText left, CardSwap right */}
-      <div className="w-full max-w-6xl flex items-center gap-12 mt-4">
-
-        {/* Left — FuzzyText messaging */}
-        <div className="flex-1 text-left flex flex-col gap-1 min-w-0">
-          <FuzzyText
-            fontSize="1.1rem"
-            fontWeight={500}
-            color="#000"
-            baseIntensity={0.08}
-            hoverIntensity={0.35}
-            enableHover
-          >
-            No more
-          </FuzzyText>
-          <FuzzyText
-            fontSize="clamp(2.8rem, 5vw, 4.5rem)"
-            fontWeight={900}
-            color="#000"
-            baseIntensity={0.12}
-            hoverIntensity={0.45}
-            enableHover
-            glitchMode
-            glitchInterval={3500}
-            glitchDuration={180}
-          >
-            Stupid
-          </FuzzyText>
-          <FuzzyText
-            fontSize="clamp(1.5rem, 2.5vw, 2.2rem)"
-            fontWeight={800}
-            color="#000"
-            baseIntensity={0.1}
-            hoverIntensity={0.4}
-            enableHover
-          >
-            Technical Tests.
-          </FuzzyText>
-          <div style={{ marginTop: '1.5rem' }}>
-            <FuzzyText
-              fontSize="1rem"
-              fontWeight={500}
-              color="#00000088"
-              baseIntensity={0.06}
-              hoverIntensity={0.3}
-              enableHover
-            >
-              It is time to show
-            </FuzzyText>
-          </div>
-          <FuzzyText
-            fontSize="clamp(1.6rem, 2.8vw, 2.5rem)"
-            fontWeight={900}
-            color="#000"
-            baseIntensity={0.1}
-            hoverIntensity={0.42}
-            enableHover
-            gradient={['#7c3aed', '#db2777', '#2563eb']}
-          >
-            how Truly worth you are.
-          </FuzzyText>
-        </div>
-
-        {/* Right — CardSwap */}
-        <div className="flex-1 relative" style={{ height: '420px' }}>
+      {/* CardSwap — centered */}
+      <div className="relative" style={{ width: '440px', height: '420px', marginTop: '10rem', marginBottom: '5rem' }}>
         <CardSwap
+          className="relative perspective-[900px] overflow-visible"
           cardDistance={55}
           verticalDistance={65}
           delay={4000}
@@ -198,9 +135,8 @@ export default function Hero() {
             </div>
           </Card>
         </CardSwap>
-        </div>
-
       </div>
+
 
     </section>
   )
