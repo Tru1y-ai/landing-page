@@ -1,4 +1,5 @@
 import logo from '/trulylogo.png'
+import SplitText from './SplitText'
 
 const LINKS = {
   Resources: [
@@ -16,15 +17,6 @@ const LINKS = {
 }
 
 const SOCIALS = [
-  // {
-  //   label: 'X / Twitter',
-  //   href: 'https://x.com',
-  //   icon: (
-  //     <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
-  //       <path d="M14.6009 2H17.0544L11.6943 8.35385L18 17H13.0627L9.19566 11.7562L4.77087 17H2.31595L8.04904 10.2038L2 2H7.06262L10.5581 6.79308L14.6009 2ZM13.7399 15.4769H15.0993L6.32392 3.44308H4.86506L13.7399 15.4769Z" />
-  //     </svg>
-  //   ),
-  // },
   {
     label: 'LinkedIn',
     href: 'https://www.linkedin.com/company/trulyai',
@@ -34,15 +26,6 @@ const SOCIALS = [
       </svg>
     ),
   },
-  // {
-  //   label: 'Instagram',
-  //   href: 'https://instagram.com',
-  //   icon: (
-  //     <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
-  //       <path d="M10 1C7.555 1 7.25 1.011 6.29 1.054 5.331 1.099 4.679 1.25 4.105 1.473 3.513 1.702 3.011 2.01 2.511 2.511 2.01 3.011 1.701 3.513 1.473 4.105 1.25 4.679 1.098 5.331 1.054 6.29 1.009 7.25 1 7.555 1 10c0 2.445 1.011 2.75.054 3.71.099 4.668 1.25 5.321 1.473 5.895 1.702 6.486 2.01 6.989 2.511 7.49 3.011 7.989 3.513 8.299 4.105 8.528 4.679 8.75 5.332 8.902 6.29 8.946 7.25 8.991 7.555 9 10 9c2.445 0 2.75-.011 3.71-.054.668-.901 1.321-.131 1.895-.473 1.895-.702 6.486-1.989 6.989-2.511 7.49-3.011 7.989-3.513 8.298-4.105 8.528-4.679 8.75-5.321 8.902-6.29 8.946-7.25 8.991-7.555 9-10 9c0-2.445-.011-2.75-.054-3.71-.901-5.332-.131-5.322-.473-5.895-.702-6.486-1.989-6.989-2.511-7.49-3.011-7.989-3.513-8.298-4.105-8.528-4.679-8.75-5.321-8.902-6.29-8.946C12.75 1.009 12.445 1 10 1zm0 1.622c2.403 0 2.688.012 3.638.074.877.041 1.354.186 1.671.311.42.163.719.358 1.034.672.315.315.51.614.672 1.034.125.317.27.794.311 1.671.062.95.074 1.235.074 3.638s-.012 2.688-.074 3.638c-.041.877-.186 1.354-.311 1.671-.163.42-.358.719-.672 1.034-.315.315-.614.51-1.034.672-.317.125-.794.27-1.671.311-.95.062-1.235.074-3.638.074s-2.688-.012-3.638-.074c-.877-.041-1.354-.186-1.671-.311a2.785 2.785 0 01-1.034-.672 2.785 2.785 0 01-.672-1.034c-.125-.317-.27-.794-.311-1.671C2.632 12.688 2.62 12.403 2.62 10s.012-2.688.074-3.638c.041-.877.186-1.354.311-1.671.163-.42.358-.719.672-1.034.315-.315.614-.51 1.034-.672.317-.125.794-.27 1.671-.311.95-.062 1.235-.074 3.638-.074zM10 5.378a4.622 4.622 0 100 9.244 4.622 4.622 0 000-9.244zM10 13a3 3 0 110-6 3 3 0 010 6zm5.884-7.804a1.079 1.079 0 100-2.158 1.079 1.079 0 000 2.158z" />
-  //     </svg>
-  //   ),
-  // },
   {
     label: 'GitHub',
     href: 'https://github.com/Tru1y-ai',
@@ -76,7 +59,20 @@ export default function Footer() {
           <div className="lg:w-1/2">
             <a href="/" className="inline-flex items-center gap-2 no-underline">
               <img src={logo} alt="Truly logo" className="h-8 w-auto" />
-              <span className="text-black text-xl tracking-tight">Truly</span>
+              <SplitText
+                text="Truly"
+                tag="span"
+                className="text-black text-xl tracking-tight"
+                delay={25}
+                duration={0.8}
+                ease="power3.out"
+                splitType="chars"
+                from={{ opacity: 0, y: 15 }}
+                to={{ opacity: 1, y: 0 }}
+                threshold={0.1}
+                rootMargin="-10px"
+                textAlign="left"
+              />
             </a>
           </div>
 
@@ -84,7 +80,20 @@ export default function Footer() {
           <nav className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 lg:mt-0 lg:w-1/2" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', paddingLeft: '3rem' }}>
             {Object.entries(LINKS).map(([section, links]) => (
               <div key={section}>
-                <h3 className="text-lg text-black tracking-tight mb-3">{section}</h3>
+                <SplitText
+                  text={section}
+                  tag="h3"
+                  className="text-lg text-black tracking-tight mb-3"
+                  delay={22}
+                  duration={0.8}
+                  ease="power3.out"
+                  splitType="chars"
+                  from={{ opacity: 0, y: 20 }}
+                  to={{ opacity: 1, y: 0 }}
+                  threshold={0.1}
+                  rootMargin="-10px"
+                  textAlign="left"
+                />
                 <ul className="mt-3 flex flex-col gap-y-2">
                   {links.map(({ label, href }) => (
                     <li key={label}>
@@ -92,7 +101,20 @@ export default function Footer() {
                         href={href}
                         className="text-sm text-black/40 hover:text-black transition-colors duration-200 no-underline tracking-tight"
                       >
-                        {label}
+                        <SplitText
+                          text={label}
+                          tag="span"
+                          className=""
+                          delay={15}
+                          duration={0.7}
+                          ease="power2.out"
+                          splitType="chars"
+                          from={{ opacity: 0, y: 12 }}
+                          to={{ opacity: 1, y: 0 }}
+                          threshold={0.1}
+                          rootMargin="-10px"
+                          textAlign="left"
+                        />
                       </a>
                     </li>
                   ))}
@@ -107,9 +129,20 @@ export default function Footer() {
           className="flex flex-col md:flex-row items-center justify-between gap-4"
           style={{ marginTop: '4rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.1)' }}
         >
-          <p className="text-xs text-black/35 tracking-tight order-2 md:order-1">
-            © {new Date().getFullYear()} Truly. All rights reserved.
-          </p>
+          <SplitText
+            text={`© ${new Date().getFullYear()} Truly. All rights reserved.`}
+            tag="p"
+            className="text-xs text-black/35 tracking-tight order-2 md:order-1"
+            delay={15}
+            duration={0.7}
+            ease="power2.out"
+            splitType="words"
+            from={{ opacity: 0, y: 10 }}
+            to={{ opacity: 1, y: 0 }}
+            threshold={0.1}
+            rootMargin="-10px"
+            textAlign="left"
+          />
           <div className="flex items-center gap-5 order-1 md:order-2">
             {SOCIALS.map(({ label, href, icon }) => (
               <a

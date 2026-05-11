@@ -39,26 +39,48 @@ export default function WhatWeDoSection() {
 
       {/* Header */}
       <div style={{ maxWidth: '860px', margin: '0 auto', padding: '0 2.5rem', marginBottom: '5rem' }} className="flex flex-col items-center text-center">
-        <p className="text-xs uppercase tracking-[0.2em] text-black/35 mb-7">What We Do</p>
-        <div className="flex justify-center w-full">
-          <SplitText
-            text="Replace the tools that were never built for today."
-            tag="h2"
-            className="text-5xl md:text-6xl tracking-tight text-black"
-            delay={20}
-            duration={1}
-            ease="power3.out"
-            splitType="words"
-            from={{ opacity: 0, y: 30 }}
-            to={{ opacity: 1, y: 0 }}
-            threshold={0.2}
-            rootMargin="-60px"
-            textAlign="center"
-          />
-        </div>
-        <p className="mt-7 text-lg text-black/45 leading-relaxed max-w-xl">
-          Truly is a B2B platform replacing CodeSignal, HackerRank, and HireVue with assessments that measure what actually matters.
-        </p>
+        <SplitText
+          text="What We Do"
+          tag="p"
+          className="text-xs uppercase tracking-[0.2em] text-black/35 mb-7"
+          delay={20}
+          duration={0.7}
+          ease="power2.out"
+          splitType="chars"
+          from={{ opacity: 0, y: 15 }}
+          to={{ opacity: 1, y: 0 }}
+          threshold={0.1}
+          rootMargin="-10px"
+          textAlign="center"
+        />
+        <SplitText
+          text="Replace the tools that were never built for today."
+          tag="h2"
+          className="text-5xl md:text-6xl tracking-tight text-black"
+          delay={20}
+          duration={1}
+          ease="power3.out"
+          splitType="words"
+          from={{ opacity: 0, y: 30 }}
+          to={{ opacity: 1, y: 0 }}
+          threshold={0.2}
+          rootMargin="-60px"
+          textAlign="center"
+        />
+        <SplitText
+          text="Truly is a B2B platform replacing CodeSignal, HackerRank, and HireVue with assessments that measure what actually matters."
+          tag="p"
+          className="mt-7 text-lg text-black/45 leading-relaxed max-w-xl"
+          delay={20}
+          duration={0.9}
+          ease="power2.out"
+          splitType="words"
+          from={{ opacity: 0, y: 20 }}
+          to={{ opacity: 1, y: 0 }}
+          threshold={0.1}
+          rootMargin="-20px"
+          textAlign="center"
+        />
       </div>
 
       {/* Feature grid — full bleed, 2 cols */}
@@ -78,11 +100,48 @@ export default function WhatWeDoSection() {
               gap: '1rem',
             }}
           >
-            <span className="inline-block text-xs text-black/30 tracking-widest uppercase border border-black/10 rounded-full px-3 py-1 self-start">
-              {tag}
-            </span>
-            <h3 className="text-xl tracking-tight text-black leading-snug">{title}</h3>
-            <p className="text-sm text-black/45 leading-relaxed">{body}</p>
+            <SplitText
+              text={tag}
+              tag="span"
+              className="text-xs text-black/30 tracking-widest uppercase border border-black/10 rounded-full px-3 py-1 self-start"
+              delay={15}
+              duration={0.6}
+              ease="power2.out"
+              splitType="chars"
+              from={{ opacity: 0, y: 10 }}
+              to={{ opacity: 1, y: 0 }}
+              threshold={0.1}
+              rootMargin="-10px"
+              textAlign="left"
+            />
+            <SplitText
+              text={title}
+              tag="h3"
+              className="text-xl tracking-tight text-black leading-snug"
+              delay={20}
+              duration={0.9}
+              ease="power3.out"
+              splitType="chars"
+              from={{ opacity: 0, y: 25 }}
+              to={{ opacity: 1, y: 0 }}
+              threshold={0.2}
+              rootMargin="-40px"
+              textAlign="left"
+            />
+            <SplitText
+              text={body}
+              tag="p"
+              className="text-sm text-black/45 leading-relaxed"
+              delay={18}
+              duration={0.8}
+              ease="power2.out"
+              splitType="words"
+              from={{ opacity: 0, y: 15 }}
+              to={{ opacity: 1, y: 0 }}
+              threshold={0.1}
+              rootMargin="-20px"
+              textAlign="left"
+            />
           </div>
         ))}
       </div>

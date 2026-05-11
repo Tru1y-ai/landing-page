@@ -22,32 +22,67 @@ export default function RequestDemoSection() {
 
         {/* Left — pitch */}
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-black/35 mb-7">Get Started</p>
-          <div className="flex justify-start">
-            <SplitText
-              text="See Truly in action."
-              tag="h2"
-              className="text-5xl tracking-tight text-black"
-              delay={30}
-              duration={1}
-              ease="power3.out"
-              splitType="chars"
-              from={{ opacity: 0, y: 40 }}
-              to={{ opacity: 1, y: 0 }}
-              threshold={0.2}
-              rootMargin="-60px"
-              textAlign="left"
-            />
-          </div>
-          <p className="mt-6 text-lg text-black/45 leading-relaxed">
-            Tell us a bit about your team and we'll set up a personalized walkthrough within one business day.
-          </p>
+          <SplitText
+            text="Get Started"
+            tag="p"
+            className="text-xs uppercase tracking-[0.2em] text-black/35 mb-7"
+            delay={20}
+            duration={0.7}
+            ease="power2.out"
+            splitType="chars"
+            from={{ opacity: 0, y: 15 }}
+            to={{ opacity: 1, y: 0 }}
+            threshold={0.1}
+            rootMargin="-10px"
+            textAlign="left"
+          />
+          <SplitText
+            text="See Truly in action."
+            tag="h2"
+            className="text-5xl tracking-tight text-black"
+            delay={30}
+            duration={1}
+            ease="power3.out"
+            splitType="chars"
+            from={{ opacity: 0, y: 40 }}
+            to={{ opacity: 1, y: 0 }}
+            threshold={0.2}
+            rootMargin="-60px"
+            textAlign="left"
+          />
+          <SplitText
+            text="Tell us a bit about your team and we'll set up a personalized walkthrough within one business day."
+            tag="p"
+            className="mt-6 text-lg text-black/45 leading-relaxed"
+            delay={20}
+            duration={0.9}
+            ease="power2.out"
+            splitType="words"
+            from={{ opacity: 0, y: 20 }}
+            to={{ opacity: 1, y: 0 }}
+            threshold={0.1}
+            rootMargin="-20px"
+            textAlign="left"
+          />
 
           <ul className="mt-10 flex flex-col gap-4">
             {BENEFITS.map(b => (
               <li key={b} className="flex items-start gap-3">
                 <span className="mt-1 w-1.5 h-1.5 rounded-full bg-black/30 flex-shrink-0" />
-                <span className="text-sm text-black/55 leading-relaxed">{b}</span>
+                <SplitText
+                  text={b}
+                  tag="span"
+                  className="text-sm text-black/55 leading-relaxed"
+                  delay={15}
+                  duration={0.8}
+                  ease="power2.out"
+                  splitType="words"
+                  from={{ opacity: 0, y: 15 }}
+                  to={{ opacity: 1, y: 0 }}
+                  threshold={0.1}
+                  rootMargin="-10px"
+                  textAlign="left"
+                />
               </li>
             ))}
           </ul>
@@ -57,8 +92,34 @@ export default function RequestDemoSection() {
         <div>
           {submitted ? (
             <div className="text-center py-20 border border-black/8 rounded-2xl">
-              <p className="text-2xl tracking-tight text-black mb-3">Thanks, we'll be in touch.</p>
-              <p className="text-sm text-black/40">Expect a reply within one business day.</p>
+              <SplitText
+                text="Thanks, we'll be in touch."
+                tag="p"
+                className="text-2xl tracking-tight text-black mb-3"
+                delay={25}
+                duration={0.9}
+                ease="power3.out"
+                splitType="chars"
+                from={{ opacity: 0, y: 20 }}
+                to={{ opacity: 1, y: 0 }}
+                threshold={0.1}
+                rootMargin="0px"
+                textAlign="center"
+              />
+              <SplitText
+                text="Expect a reply within one business day."
+                tag="p"
+                className="text-sm text-black/40"
+                delay={18}
+                duration={0.8}
+                ease="power2.out"
+                splitType="words"
+                from={{ opacity: 0, y: 15 }}
+                to={{ opacity: 1, y: 0 }}
+                threshold={0.1}
+                rootMargin="0px"
+                textAlign="center"
+              />
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -108,9 +169,20 @@ export default function RequestDemoSection() {
                 Request a Demo
               </button>
 
-              <p className="text-xs text-center text-black/25">
-                No spam. We'll only contact you about your demo request.
-              </p>
+              <SplitText
+                text="No spam. We'll only contact you about your demo request."
+                tag="p"
+                className="text-xs text-black/25"
+                delay={15}
+                duration={0.7}
+                ease="power2.out"
+                splitType="words"
+                from={{ opacity: 0, y: 10 }}
+                to={{ opacity: 1, y: 0 }}
+                threshold={0.1}
+                rootMargin="-10px"
+                textAlign="center"
+              />
             </form>
           )}
         </div>
