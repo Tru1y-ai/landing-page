@@ -2,7 +2,7 @@ export default function Nav() {
   return (
     <header className="nav" id="nav">
       <a className="brand" href="#top">
-        <span className="logo-chip"><img src="/truly-logo.png" alt="Truly" /></span>
+        <span className="logo-chip"><img src={`${import.meta.env.BASE_URL}truly-logo.png`} alt="Truly" /></span>
         Truly
       </a>
       <div className="nav-right">

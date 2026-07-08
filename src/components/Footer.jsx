@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="wrap">
         <div className="foot-inner">
           <div className="foot-brand">
-            <a className="brand" href="#top"><span className="logo-chip"><img src="/truly-logo.png" alt="Truly" /></span>Truly</a>
+            <a className="brand" href="#top"><span className="logo-chip"><img src={`${import.meta.env.BASE_URL}truly-logo.png`} alt="Truly" /></span>Truly</a>
             <p>Talent assessment for the age of AI. See how people really work.</p>
           </div>
           <div className="foot-links">
