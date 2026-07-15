@@ -1,3 +1,5 @@
+import Reveal from './Reveal.jsx';
+
 const FAQS = [
   { q: 'How is each assessment created?', a: 'Truly generates a role-specific work simulation directly from your job posting — using its description, seniority level, and stack. Instead of pulling from a static library, every candidate gets a task that mirrors the actual job.' },
   { q: 'Where do candidates work?', a: 'On their own machine, in their own setup. Running the assessment locally captures a far more realistic workflow than a browser sandbox — the tools, shortcuts, and environment they actually use to ship.' },
@@ -8,18 +10,20 @@ const FAQS = [
 
 export default function Faq() {
   return (
-    <section className="sec faq" id="faq" data-screen-label="FAQ">
+    <section className="sec" id="faq">
       <div className="wrap">
-        <p className="label" data-reveal>FAQ</p>
-        <h2 className="h2" data-reveal data-reveal-d="1">Common questions</h2>
-        <div className="faq-list" data-reveal data-reveal-d="2">
-          {FAQS.map((f) => (
-            <details className="faq-item" key={f.q}>
-              <summary>{f.q}<span className="fq-ic"></span></summary>
-              <div className="fq-body"><p>{f.a}</p></div>
-            </details>
-          ))}
-        </div>
+        <Reveal><p className="eyebrow">FAQ</p></Reveal>
+        <Reveal delay={0.08}><h2 className="h2">Common questions</h2></Reveal>
+        <Reveal delay={0.16}>
+          <div className="faq-list">
+            {FAQS.map((f) => (
+              <details className="faq-item" key={f.q}>
+                <summary>{f.q}<span className="fq-ic"></span></summary>
+                <div className="fq-body"><p>{f.a}</p></div>
+              </details>
+            ))}
+          </div>
+        </Reveal>
       </div>
     </section>
   );

@@ -1,14 +1,27 @@
+import Reveal from './Reveal.jsx';
+import { CAL_URL } from '../links.js';
+
 export default function Cta() {
   return (
-    <section className="cta" id="waitlist" data-screen-label="Waitlist">
+    <section className="cta" id="demo">
       <div className="wrap">
-        <p className="label" data-reveal style={{ justifyContent: 'center', marginBottom: 0 }}>Early access</p>
-        <h2 className="h2" data-reveal data-reveal-d="1" style={{ textAlign: 'center' }}>See how your candidates<br /><span className="outline">actually think.</span></h2>
-        <form className="cta-form" data-reveal data-reveal-d="2" onSubmit={(e) => e.preventDefault()}>
-          <input type="email" placeholder="you@company.com" aria-label="Work email" />
-          <button className="btn btn-white" type="submit">Request demo</button>
-        </form>
-        <p className="cta-note" data-reveal data-reveal-d="3">No credit card · No surveillance theatre</p>
+        <div className="cta-panel grain">
+          <div className="cta-mesh" aria-hidden="true" />
+          <Reveal><p className="eyebrow" style={{ justifyContent: 'center' }}>Get started</p></Reveal>
+          <Reveal delay={0.08}>
+            <h2 className="h2">See how your candidates <em>actually</em> work.</h2>
+          </Reveal>
+          <Reveal delay={0.16}>
+            <div className="cta-actions">
+              <a className="btn btn-ink" href={CAL_URL} target="_blank" rel="noopener noreferrer">
+                Book a 30-min demo
+              </a>
+            </div>
+          </Reveal>
+          <Reveal delay={0.24}>
+            <p className="cta-note">Set up in a day · Works alongside your existing pipeline</p>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
