@@ -6,7 +6,7 @@ const TIERS = [
     name: 'Starter',
     amt: '$99',
     per: '/month',
-    items: ['3 assessment creations', '10 candidate evaluations', 'Full session reports'],
+    items: ['5 assessment templates with scoring rubric customization', '10 candidate evaluations', 'Full session reports'],
     cta: 'Book a demo',
   },
   {
@@ -14,7 +14,7 @@ const TIERS = [
     amt: '$399',
     per: '/month',
     featured: true,
-    items: ['5 assessment creations', '50 candidate evaluations', 'Behavioral scenario library', 'Candidate ranking across the pool'],
+    items: ['10 assessment templates with scoring rubric customization', '50 candidate evaluations', 'Behavioral scenario library', 'Candidate ranking across the pool'],
     cta: 'Book a demo',
   },
   {
