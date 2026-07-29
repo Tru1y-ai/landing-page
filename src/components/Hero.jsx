@@ -1,5 +1,10 @@
-import { motion, useReducedMotion } from 'framer-motion';
+import { useRef } from 'react';
+import gsap from 'gsap';
+import { SplitText } from 'gsap/SplitText';
+import { useGSAP } from '@gsap/react';
 import { CAL_URL } from '../links.js';
+
+gsap.registerPlugin(useGSAP, SplitText);
 
 const LOG = [
   { t: '00:02', text: <>opened <b>checkout-service</b> repo, read the ticket</> },
@@ -19,45 +24,103 @@ const SCORES = [
   { k: 'Collaboration', v: 85 },
 ];
 
-const ease = [0.22, 1, 0.36, 1];
-
 export default function Hero() {
-  const reduce = useReducedMotion();
-  const up = (delay) => ({
-    initial: reduce ? false : { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.7, delay, ease },
-  });
+  const root = useRef(null);
+  const btnRefs = useRef([]);
+  btnRefs.current = [];
+  const addBtnRef = (el) => { if (el && !btnRefs.current.includes(el)) btnRefs.current.push(el); };
+
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add(
+      { reduce: '(prefers-reduced-motion: reduce)', full: '(prefers-reduced-motion: no-preference)' },
+      (ctx) => {
+        const { reduce } = ctx.conditions;
+
+        const split = new SplitText('.h1', { type: 'words', wordsClass: 'h1-word', tag: 'span' });
+
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+        tl.from('.hero-mesh', { autoAlpha: 0, scale: 1.22, duration: reduce ? 0 : 1.4, ease: 'power2.out' }, 0)
+          .from('.hero .eyebrow', { autoAlpha: 0, y: 14, duration: reduce ? 0 : 0.6 }, reduce ? 0 : 0.15)
+          .from(split.words, {
+            autoAlpha: 0,
+            y: 34,
+            filter: 'blur(10px)',
+            stagger: reduce ? 0 : 0.06,
+            duration: reduce ? 0 : 0.75,
+          }, reduce ? 0 : 0.22)
+          .from('.hero-sub', { autoAlpha: 0, y: 16, duration: reduce ? 0 : 0.6 }, reduce ? 0 : '-=0.35')
+          .from('.hero-cta .btn', { autoAlpha: 0, y: 14, stagger: reduce ? 0 : 0.08, duration: reduce ? 0 : 0.55 }, reduce ? 0 : '-=0.3')
+          .from('.hero-note', { autoAlpha: 0, duration: reduce ? 0 : 0.5 }, reduce ? 0 : '-=0.25')
+          .from('.replay', {
+            autoAlpha: 0,
+            y: reduce ? 0 : 40,
+            scale: reduce ? 1 : 0.97,
+            duration: reduce ? 0 : 0.85,
+            ease: 'power3.out',
+          }, reduce ? 0 : '-=0.3')
+          .from('.score-bar i', {
+            width: 0,
+            stagger: reduce ? 0 : 0.12,
+            duration: reduce ? 0 : 0.9,
+            ease: 'power2.out',
+          }, reduce ? 0 : '-=0.4')
+          .from('.score-top b', {
+            textContent: 0,
+            duration: reduce ? 0 : 1,
+            snap: { textContent: 1 },
+            stagger: reduce ? 0 : 0.12,
+            ease: 'power1.out',
+          }, '<');
+
+        if (!reduce) {
+          btnRefs.current.forEach((btn) => {
+            const quickX = gsap.quickTo(btn, 'x', { duration: 0.45, ease: 'power3.out' });
+            const quickY = gsap.quickTo(btn, 'y', { duration: 0.45, ease: 'power3.out' });
+            const onMove = (e) => {
+              const r = btn.getBoundingClientRect();
+              quickX((e.clientX - r.left - r.width / 2) * 0.35);
+              quickY((e.clientY - r.top - r.height / 2) * 0.35);
+            };
+            const onLeave = () => { quickX(0); quickY(0); };
+            btn.addEventListener('mousemove', onMove);
+            btn.addEventListener('mouseleave', onLeave);
+          });
+        }
+
+        return () => split.revert();
+      }
+    );
+
+    return () => mm.revert();
+  }, { scope: root });
 
   return (
-    <section className="hero" id="top">
+    <section className="hero" id="top" ref={root}>
       <div className="wrap">
         <div className="hero-panel grain">
           <div className="hero-mesh" aria-hidden="true" />
-          <motion.p className="eyebrow" {...up(0)}>Work simulations for hiring</motion.p>
-          <motion.h1 className="h1" {...up(0.08)}>
-            Hire for the <em>work</em>, not the interview.
-          </motion.h1>
-          <motion.p className="hero-sub" {...up(0.16)}>
+          <p className="eyebrow">Work simulations for hiring</p>
+          <h1 className="h1">
+            Hire for the <em>work,</em> not the interview.
+          </h1>
+          <p className="hero-sub">
             Truly turns your job description into a job-specific work simulation.
             Candidates do the actual work on their own machine, with their own tools —
             and AI evaluators turn the full session into evidence you can hire on.
-          </motion.p>
-          <motion.div className="hero-cta" {...up(0.24)}>
-            <a className="btn btn-ink" href={CAL_URL} target="_blank" rel="noopener noreferrer">Book a demo</a>
-            <a className="btn btn-ghost" href="#how">See how it works</a>
-          </motion.div>
-          <motion.p className="hero-note" {...up(0.3)}>
+          </p>
+          <div className="hero-cta">
+            <a ref={addBtnRef} className="btn btn-ink" href={CAL_URL} target="_blank" rel="noopener noreferrer">Book a demo</a>
+            <a ref={addBtnRef} className="btn btn-ghost" href="#how">See how it works</a>
+          </div>
+          <p className="hero-note">
             100+ candidates assessed · 3+ startups hiring with Truly today
-          </motion.p>
+          </p>
         </div>
 
-        <motion.div
-          className="replay"
-          initial={reduce ? false : { opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.4, ease }}
-        >
+        <div className="replay">
           <div className="replay-frame">
             <div className="replay-bar">
               <span className="replay-dots"><i /><i /><i /></span>
@@ -76,15 +139,11 @@ export default function Hero() {
               </div>
               <div className="replay-rail">
                 <p className="rail-head">Evaluation</p>
-                {SCORES.map((s, i) => (
+                {SCORES.map((s) => (
                   <div className="score-row" key={s.k}>
                     <div className="score-top"><span>{s.k}</span><b>{s.v}</b></div>
                     <div className="score-bar">
-                      <motion.i
-                        initial={reduce ? { width: `${s.v}%` } : { width: 0 }}
-                        animate={{ width: `${s.v}%` }}
-                        transition={{ duration: 1.1, delay: 0.9 + i * 0.15, ease }}
-                      />
+                      <i style={{ width: `${s.v}%` }} />
                     </div>
                   </div>
                 ))}
@@ -96,7 +155,7 @@ export default function Hero() {
             </div>
             <div className="replay-scrub"><i /></div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

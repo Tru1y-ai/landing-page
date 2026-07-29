@@ -2,6 +2,7 @@ import Nav from './components/Nav.jsx';
 import Hero from './components/Hero.jsx';
 import Problem from './components/Problem.jsx';
 import How from './components/How.jsx';
+import Pipeline from './components/Pipeline.jsx';
 import Why from './components/Why.jsx';
 import Pricing from './components/Pricing.jsx';
 import Faq from './components/Faq.jsx';
@@ -15,6 +16,7 @@ export default function App() {
       <Hero />
       <Problem />
       <How />
+      <Pipeline />
       <Why />
       <Pricing />
       <Faq />
