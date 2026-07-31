@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
+/* Scan only application source. Tailwind's default is the whole project, and
+   .agents/skills holds vendored design-skill docs full of example class names
+   (rounded-[2rem], backdrop-blur-2xl, col-span-8 …). Committing those skills
+   pushed the built stylesheet from 49.8kB to 66.4kB — a third of production
+   CSS was utilities generated for markdown that never ships. */
+@source not "../.agents";
 
 /* Tailwind/shadcn token layer — maps the brand palette below onto the
    --color-* names utilities and shadcn components resolve against. */
@@ -136,6 +142,14 @@
   .btn-ink:hover { background: var(--green); transform: translateY(-1px); box-shadow: 0 8px 20px -10px rgba(20,86,62,0.5); }
   .btn-ghost { border-color: var(--line); color: var(--ink); background: transparent; }
   .btn-ghost:hover { border-color: var(--faint); background: rgba(0,0,0,0.025); }
+  /* Nothing on the page had a pressed state — 22 :hover rules and no
+     :active. A click gave no physical feedback at all. This covers both the
+     hand-written .btn and every shadcn Button, including the ones rendered
+     through `asChild` as an <a>, which is why it keys off the data attribute
+     rather than the element. */
+  .btn:active,
+  [data-slot="button"]:active { transform: scale(0.97); }
+  .btn, [data-slot="button"] { transition: transform .2s var(--ease); }
 
   /* ---------- nav ---------- */
   .nav {
@@ -154,7 +168,7 @@
   .brand { display: flex; align-items: center; gap: 10px; font: 600 18px var(--sans); letter-spacing: -0.02em; }
   .brand img { width: 26px; height: 26px; object-fit: contain; }
   .nav-links { display: flex; align-items: center; gap: 28px; }
-  .nav-link { font-size: 14px; font-weight: 500; color: var(--muted); transition: color .2s; }
+  .nav-link { font-size: 14px; font-weight: 500; color: var(--muted); transition: color .2s var(--ease); }
   .nav-link:hover { color: var(--ink); }
   .nav .btn { padding: 10px 18px; }
   @media (max-width: 720px) { .nav-link { display: none; } }
@@ -417,7 +431,7 @@
   .hero-brand img { width: 26px; height: 26px; object-fit: contain; }
   .hero-brand sup { font-size: 11px; opacity: 0.65; }
   .hero-links { display: flex; align-items: center; gap: 30px; }
-  .hero-links a { font-size: 14px; color: var(--muted-foreground); transition: color .2s; }
+  .hero-links a { font-size: 14px; color: var(--muted-foreground); transition: color .2s var(--ease); }
   .hero-links a:hover { color: #fff; }
   @media (max-width: 900px) { .hero-links { display: none; } }
 
@@ -935,6 +949,8 @@
   }
   .faq-item summary::-webkit-details-marker { display: none; }
   .faq-item summary:hover { color: var(--green); }
+  /* a <summary> is a button in every way that matters to the user */
+  .faq-item summary:active { transform: scale(0.994); }
   .fq-ic { flex: 0 0 auto; width: 16px; height: 16px; position: relative; }
   .fq-ic::before, .fq-ic::after { content: ""; position: absolute; background: var(--faint); transition: transform .35s var(--ease), opacity .3s; }
   .fq-ic::before { left: 0; top: 7px; width: 16px; height: 1.5px; }
