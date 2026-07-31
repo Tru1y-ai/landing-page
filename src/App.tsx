@@ -13,16 +13,21 @@ import Footer from './components/Footer';
 export default function App() {
   return (
     <>
+      {/* First tab stop on the page. Without it, reaching the content past a
+          nav and a 100svh hero means tabbing through every link each time. */}
+      <a className="skip-link" href="#main">Skip to content</a>
       <ScrollProgress />
       <Nav />
-      <Hero />
-      <Problem />
-      <How />
-      <Pipeline />
-      <Why />
-      <Pricing />
-      <Faq />
-      <Cta />
+      <main id="main">
+        <Hero />
+        <Problem />
+        <How />
+        <Pipeline />
+        <Why />
+        <Pricing />
+        <Faq />
+        <Cta />
+      </main>
       <Footer />
     </>
   );
