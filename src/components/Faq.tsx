@@ -1,4 +1,4 @@
-import Reveal from './Reveal.jsx';
+import Reveal from './Reveal';
 
 const FAQS = [
   { q: 'How is each assessment created?', a: 'Truly generates a role-specific work simulation directly from your job posting — using its description, seniority level, and stack. Instead of pulling from a static library, every candidate gets a task that mirrors the actual job.' },

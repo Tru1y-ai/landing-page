@@ -1,31 +1,17 @@
-import { motion, useReducedMotion } from 'framer-motion';
-import Reveal from './Reveal.jsx';
+import { useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+import Reveal from './Reveal';
+import AgentVisual, { type AgentKind } from './AgentVisual';
 
-const EXTRACTORS = [
-  {
-    name: 'OCR interpreter',
-    hue: 'var(--moss)',
-    role: 'Reads the screen',
-    fact: ['{ "t": "12:06",', '  "event": "terminal_command",', '  "command": "npm test" }'],
-  },
-  {
-    name: 'Vision',
-    hue: 'var(--teal)',
-    role: 'Samples every 20s',
-    fact: ['{ "t": "12:07",', '  "event": "window_focus",', '  "app": "VSCode" }'],
-  },
-  {
-    name: 'Repository',
-    hue: 'var(--plum)',
-    role: 'Diffs and analyzes',
-    fact: ['{ "file": "Login.tsx",', '  "added": 18, "removed": 5,', '  "lint_errors": 0 }'],
-  },
-  {
-    name: 'AI usage',
-    hue: 'var(--amber)',
-    role: 'Reads the transcript',
-    fact: ['{ "tool": "Claude",', '  "prompt_len": 250,', '  "edited_after": true }'],
-  },
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+const EXTRACTORS: { name: string; hue: string; role: string; kind: AgentKind }[] = [
+  { name: 'OCR interpreter', hue: 'var(--moss)', role: 'Reads the screen', kind: 'ocr' },
+  { name: 'Vision', hue: 'var(--teal)', role: 'Samples every 20s', kind: 'vision' },
+  { name: 'Repository', hue: 'var(--plum)', role: 'Diffs and analyzes', kind: 'repo' },
+  { name: 'AI usage', hue: 'var(--amber)', role: 'Reads the transcript', kind: 'ai' },
 ];
 
 const TIMELINE = [
@@ -52,21 +38,35 @@ const TRAIL = [
   { t: '12:14', e: 'fixed the assertion — 18 passing' },
 ];
 
-const ease = [0.22, 1, 0.36, 1];
-
 export default function Pipeline() {
-  const reduce = useReducedMotion();
+  const root = useRef<HTMLElement>(null);
 
-  // staggered one-shot reveal; looping these would leave holes as rows fell out of sync
-  const line = (delay) => ({
-    initial: reduce ? false : { opacity: 0, y: 4 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, margin: '-30px' },
-    transition: { duration: 0.4, delay, ease },
-  });
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+
+        // competency bars fill from their own width
+        gsap.utils.toArray<HTMLElement>('.pipe-comp-bar i').forEach((bar, i) => {
+          gsap.from(bar, {
+            scaleX: 0,
+            transformOrigin: 'left center',
+            duration: 0.9,
+            delay: 0.1 + i * 0.08,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: bar, start: 'top 94%', once: true },
+          });
+        });
+      });
+
+      return () => mm.revert();
+    },
+    { scope: root }
+  );
 
   return (
-    <section className="sec pipe" id="pipeline">
+    <section className="sec pipe" id="pipeline" ref={root}>
       <div className="wrap">
         <Reveal><p className="eyebrow">Inside the evaluation</p></Reveal>
         <Reveal delay={0.08}>
@@ -90,17 +90,11 @@ export default function Pipeline() {
               swapped without touching the rest.
             </p>
             <div className="pipe-ex-grid">
-              {EXTRACTORS.map((x, i) => (
+              {EXTRACTORS.map((x) => (
                 <div className="pipe-ex" style={{ '--hue': x.hue }} key={x.name}>
                   <p className="pipe-ex-n">{x.name}</p>
                   <p className="pipe-ex-r">{x.role}</p>
-                  <pre className="pipe-json" aria-hidden="true">
-                    {x.fact.map((l, j) => (
-                      <motion.span className="pipe-json-l" key={l} {...line(i * 0.12 + j * 0.1)}>
-                        {l}
-                      </motion.span>
-                    ))}
-                  </pre>
+                  <AgentVisual kind={x.kind} />
                 </div>
               ))}
             </div>
@@ -108,18 +102,31 @@ export default function Pipeline() {
         </Reveal>
 
         {/* fan-in */}
-        <div className="pipe-merge" aria-hidden="true">
-          <svg viewBox="0 0 480 80" preserveAspectRatio="none">
-            {[60, 180, 300, 420].map((x, i) => (
-              <path
-                key={x}
-                d={`M${x} 0 C ${x} 46, 240 34, 240 80`}
-                className="pipe-wire"
-                style={{ stroke: ['var(--moss)', 'var(--teal)', 'var(--plum)', 'var(--amber)'][i], animationDelay: `${i * 0.18}s` }}
-              />
-            ))}
-          </svg>
-        </div>
+        <Reveal>
+          <div className="pipe-merge" aria-hidden="true">
+            {/* preserveAspectRatio="none" stretches this viewBox ~3x on x and
+                1x on y. Geometry is meant to stretch — the wires span whatever
+                width the grid has — but stroke is not: without
+                non-scaling-stroke the dash pattern and weight stretch too, so
+                dashes ran short over the vertical departure and long over the
+                horizontal sweep and the four wires read as a smear. */}
+            <svg viewBox="0 0 480 80" preserveAspectRatio="none">
+              {[60, 180, 300, 420].map((x, i) => (
+                <path
+                  key={x}
+                  d={`M${x} 0 C ${x} 46, 240 34, 240 80`}
+                  className="pipe-wire"
+                  vectorEffect="non-scaling-stroke"
+                  style={{ '--wire': ['var(--moss)', 'var(--teal)', 'var(--plum)', 'var(--amber)'][i], animationDelay: `${i * 0.18}s` }}
+                />
+              ))}
+            </svg>
+            {/* four streams becoming one — the merge deserves to be a place.
+                In HTML, not the svg: a <circle> in that viewBox renders as a
+                flat ellipse three times wider than it is tall. */}
+            <span className="pipe-merge-node" />
+          </div>
+        </Reveal>
 
         {/* 02 — assemble */}
         <Reveal>
@@ -133,11 +140,13 @@ export default function Pipeline() {
             <div className="pipe-assemble">
               <div className="pipe-tl">
                 {TIMELINE.map((r, i) => (
-                  <motion.div className="pipe-tl-row" key={r.t + r.e} {...line(i * 0.14)}>
+                  <Reveal delay={i * 0.08} key={r.t + r.e}>
+                  <div className="pipe-tl-row">
                     <span className="pipe-tl-t">{r.t}</span>
                     <span className="pipe-tl-e">{r.e}</span>
                     <span className="pipe-tl-b">{r.b}</span>
-                  </motion.div>
+                  </div>
+                  </Reveal>
                 ))}
               </div>
               <div className="pipe-behav">
@@ -169,19 +178,14 @@ export default function Pipeline() {
               the verdict from their scores alone.
             </p>
             <div className="pipe-comp-grid">
-              {COMPETENCIES.map((c, i) => (
+              {COMPETENCIES.map((c) => (
                 <div className="pipe-comp" key={c.k}>
                   <div className="pipe-comp-top">
                     <span>{c.k}</span>
                     <b>{c.v}<i>/5</i></b>
                   </div>
                   <div className="pipe-comp-bar">
-                    <motion.i
-                      initial={reduce ? { width: `${c.v * 20}%` } : { width: 0 }}
-                      whileInView={{ width: `${c.v * 20}%` }}
-                      viewport={{ once: true, margin: '-40px' }}
-                      transition={{ duration: 0.9, delay: 0.1 + i * 0.08, ease }}
-                    />
+                    <i style={{ width: `${c.v * 20}%` }} />
                   </div>
                   <p className="pipe-comp-s">sees: {c.sees}</p>
                 </div>
@@ -210,10 +214,12 @@ export default function Pipeline() {
                 <span>Testing</span><b>3<i>/5</i></b>
               </div>
               {TRAIL.map((r, i) => (
-                <motion.div className="pipe-trail-row" key={r.t} {...line(0.15 + i * 0.16)}>
+                <Reveal delay={i * 0.08} key={r.t}>
+                <div className="pipe-trail-row">
                   <span className="pipe-trail-t">{r.t}</span>
                   <span>{r.e}</span>
-                </motion.div>
+                </div>
+                </Reveal>
               ))}
               <p className="pipe-trail-f">3 linked events · full replay available</p>
             </div>

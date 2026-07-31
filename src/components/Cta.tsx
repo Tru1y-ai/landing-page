@@ -1,5 +1,5 @@
-import Reveal from './Reveal.jsx';
-import { CAL_URL } from '../links.js';
+import Reveal from './Reveal';
+import { CAL_URL } from '../links';
 
 export default function Cta() {
   return (

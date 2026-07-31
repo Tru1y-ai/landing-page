@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { CAL_URL } from '../links.js';
+import { CAL_URL } from '../links';
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.85);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);

@@ -1,5 +1,11 @@
-import Reveal from './Reveal.jsx';
-import { CAL_URL } from '../links.js';
+import { useRef } from 'react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import Reveal from './Reveal';
+import { wireCardTilt, TILT_QUERY } from '@/lib/cardTilt';
+import { CAL_URL } from '../links';
+
+gsap.registerPlugin(useGSAP);
 
 const TIERS = [
   {
@@ -27,8 +33,26 @@ const TIERS = [
 ];
 
 export default function Pricing() {
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    (_ctx, contextSafe) => {
+      const mm = gsap.matchMedia();
+      mm.add(TILT_QUERY, () =>
+        // gentler than the problem cards — these hold a CTA people need to hit
+        wireCardTilt(gsap.utils.toArray<HTMLElement>('.price-card'), contextSafe!, {
+          maxY: 7,
+          maxX: 5,
+          lift: 26,
+        })
+      );
+      return () => mm.revert();
+    },
+    { scope: root }
+  );
+
   return (
-    <section className="sec" id="pricing">
+    <section className="sec" id="pricing" ref={root}>
       <div className="wrap">
         <Reveal><p className="eyebrow">Pricing</p></Reveal>
         <Reveal delay={0.08}><h2 className="h2">Priced per assessment, not per seat.</h2></Reveal>
@@ -41,6 +65,8 @@ export default function Pricing() {
         <div className="price-grid">
           {TIERS.map((t, i) => (
             <Reveal delay={i * 0.08} key={t.name} style={{ display: 'flex' }}>
+              {/* static Z offset lives here, never on the card GSAP tilts */}
+              <div className={`price-3d${t.featured ? ' price-fwd' : ''}`}>
               <div className={`price-card${t.featured ? ' featured' : ''}`}>
                 {t.featured && <span className="price-pop">Most popular</span>}
                 <p className="price-name">{t.name}</p>
@@ -56,6 +82,7 @@ export default function Pricing() {
                 >
                   {t.cta}
                 </a>
+              </div>
               </div>
             </Reveal>
           ))}

@@ -1,4 +1,10 @@
-import Reveal from './Reveal.jsx';
+import { useRef } from 'react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import Reveal from './Reveal';
+import { wireCardTilt, TILT_QUERY } from '@/lib/cardTilt';
+
+gsap.registerPlugin(useGSAP);
 
 const CARDS = [
   {
@@ -22,8 +28,23 @@ const CARDS = [
 ];
 
 export default function Problem() {
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    (_ctx, contextSafe) => {
+      const mm = gsap.matchMedia();
+
+      mm.add(TILT_QUERY, () =>
+        wireCardTilt(gsap.utils.toArray<HTMLElement>('.prob-card'), contextSafe!)
+      );
+
+      return () => mm.revert();
+    },
+    { scope: root }
+  );
+
   return (
-    <section className="sec">
+    <section className="sec" ref={root}>
       <div className="wrap">
         <Reveal><p className="eyebrow">The problem</p></Reveal>
         <Reveal delay={0.08}><h2 className="h2">Hiring measures the <em>performance</em>, not the person.</h2></Reveal>

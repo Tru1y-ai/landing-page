@@ -1,4 +1,4 @@
-import { CAL_URL } from '../links.js';
+import { CAL_URL } from '../links';
 
 export default function Footer() {
   return (
