@@ -68,9 +68,13 @@ export default function Hero() {
         {
           reduce: '(prefers-reduced-motion: reduce)',
           full: '(prefers-reduced-motion: no-preference)',
+          // Mirrors `@media (max-width: 720px)` in index.css, which hides
+          // `.sheet:nth-of-type(n+5)` — array indices 4 through 9.
+          wide: '(min-width: 721px)',
         },
         (ctx) => {
           const reduce = Boolean(ctx.conditions?.reduce);
+          const wide = Boolean(ctx.conditions?.wide);
           const hero = root.current;
           if (!hero) return;
 
@@ -169,6 +173,9 @@ export default function Hero() {
           // sheet reads as haze anyway — drift on it is pure cost.
           gsap.utils.toArray<HTMLElement>('.sheet-life').forEach((el, i) => {
             if ((SCATTER[i]?.blur ?? 99) > 5) return;
+            // narrow viewports show only the first four sheets; the rest are
+            // display:none, and driving them is invisible work that still costs
+            if (!wide && i > 3) return;
             const dir = i % 2 ? 1 : -1;
             const life = (vars: gsap.TweenVars, delay: number) =>
               gsap.to(el, { repeat: -1, yoyo: true, ease: 'sine.inOut', delay, ...vars });
@@ -228,7 +235,12 @@ export default function Hero() {
                 duration: 1.9, ease: 'power2.inOut',
               });
           };
-          nextPop = gsap.delayedCall(3.2, popOne);
+          // Every sheet in POP_POOL is hidden below 721px, so on a phone this
+          // loop would surge invisible elements forever and the feature would
+          // simply not exist. The four sheets that remain are the near ones
+          // holding the composition — pulling one of those to the camera would
+          // cover the headline on the viewport that can least afford it.
+          if (wide) nextPop = gsap.delayedCall(3.2, popOne);
 
           // parallax: the whole stage leans toward the cursor
           const rotX = gsap.quickTo('.hero-stage', 'rotationX', { duration: 0.9, ease: 'power3.out' });
