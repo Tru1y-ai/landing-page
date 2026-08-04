@@ -368,7 +368,7 @@ function HeroCopy() {
             ].map(([label, href]) => (
               <a key={href} href={href}>{label}</a>
             ))}
-            <a href="https://truly-main.vercel.app/" target="_blank" rel="noopener noreferrer">
+            <a href="https://app.trulyta.com" target="_blank" rel="noopener noreferrer">
               Log in
             </a>
           </div>
