@@ -342,13 +342,6 @@ button { font-family: inherit; }
 .pipe-ex:hover { transform: translateY(-3px); box-shadow: 0 20px 36px -26px rgba(27,26,21,0.45); }
 .pipe-ex-n { font: 600 14.5px var(--sans); letter-spacing: -0.01em; }
 .pipe-ex-r { margin-top: 3px; font: 400 12.5px var(--sans); color: var(--faint); }
-.pipe-json {
-  margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line);
-  font: 400 11px/1.75 var(--mono); color: var(--muted);
-  white-space: pre; overflow: hidden;
-}
-.pipe-json-l { display: block; }
-
 /* fan-in wires */
 .pipe-merge { height: 80px; margin-top: 4px; }
 .pipe-merge svg { width: 100%; height: 100%; display: block; }
@@ -616,3 +609,234 @@ button { font-family: inherit; }
   .pipe-ex:hover, .pipe-comp:hover { transform: none; }
   .pipe-spine i { display: none; }
 }
+
+/* ---------- agent visuals (3D diagrams, one per extractor) ---------- */
+.av { margin-top: 16px; }
+.av-stage {
+  perspective: 700px;
+  height: 152px;
+  display: flex; align-items: center; justify-content: center;
+}
+/* every diagram sits on a tilted plane rather than flat on the card */
+.av-stage > * {
+  transform: rotateX(9deg) rotateY(-15deg) translateZ(6px);
+  transform-style: preserve-3d;
+  transition: transform .5s var(--ease);
+}
+.pipe-ex:hover .av-stage > * { transform: rotateX(4deg) rotateY(-6deg) translateZ(22px); }
+
+.av-plate {
+  position: relative;
+  width: 90%;
+  border-radius: 8px;
+  background: #16150F;
+  box-shadow:
+    0 16px 26px -14px rgba(20, 18, 12, 0.6),
+    0 2px 0 rgba(255, 255, 255, 0.06) inset;
+  overflow: hidden;
+}
+
+/* --- OCR: a terminal being read, line by line --- */
+.av-term-bar {
+  display: flex; gap: 4px; padding: 7px 9px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.av-term-bar i { width: 5px; height: 5px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); }
+.av-term-body { padding: 9px 11px 12px; }
+.av-term-l {
+  font: 400 9.5px/1.9 var(--mono);
+  color: #9A9486; white-space: nowrap;
+}
+.av-prompt { color: var(--hue); }
+.av-fail { color: #C97A5E; }
+.av-pass { color: #7FC7A4; }
+/* the read head */
+/* `top` is load-bearing: without it the head takes its static position —
+   below .av-term-body — and then translates further down, so it spent its
+   whole cycle outside the plate's overflow:hidden and never appeared. */
+.av-scan {
+  position: absolute; top: 0; left: 0; right: 0; height: 26px;
+  background: linear-gradient(180deg, transparent, rgba(127, 199, 164, 0.16), transparent);
+  border-top: 1px solid rgba(143, 214, 176, 0.5);
+  animation: avScan 4s ease-in-out infinite;
+}
+/* fades out at the bottom and holds there, so resetting to the top is
+   never seen — 0% and 100% are both invisible */
+@keyframes avScan {
+  0%        { transform: translateY(-26px); opacity: 0; }
+  10%       { opacity: 1; }
+  62%       { opacity: 1; }
+  72%, 100% { transform: translateY(104px); opacity: 0; }
+}
+
+/* --- Vision: frames sampled off the screen, stacked in depth --- */
+.av-frames { position: relative; width: 80%; height: 92px; transform-style: preserve-3d; }
+.av-frame {
+  position: absolute; inset: 0;
+  border-radius: 7px;
+  background: #1B1A13;
+  box-shadow: 0 10px 20px -12px rgba(20, 18, 12, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.07) inset;
+}
+.av-f1 { transform: translateZ(26px); overflow: hidden; }
+.av-f2 { transform: translateZ(0) translate(9px, -7px); opacity: 0.62; }
+.av-f3 { transform: translateZ(-26px) translate(18px, -14px); opacity: 0.34; }
+/* the front frame pulses as a new sample is taken */
+.av-f1 { animation: avSample 4s ease-in-out infinite; }
+@keyframes avSample {
+  0%, 84%, 100% { box-shadow: 0 10px 20px -12px rgba(20,18,12,.7), 0 0 0 1px rgba(255,255,255,.07) inset; }
+  88%           { box-shadow: 0 10px 20px -12px rgba(20,18,12,.7), 0 0 0 1px var(--hue) inset, 0 0 18px -2px var(--hue); }
+}
+/* the captured screen inside the front frame */
+.av-cap { position: absolute; inset: 7px 7px 20px; border-radius: 4px; overflow: hidden; background: #0F0E0A; }
+.av-cap-bar { display: flex; gap: 3px; padding: 4px 5px; background: rgba(255,255,255,0.05); }
+.av-cap-bar i { width: 3.5px; height: 3.5px; border-radius: 50%; background: rgba(255,255,255,0.22); }
+.av-cap-body { display: flex; gap: 5px; padding: 6px 5px; }
+.av-cap-pane { flex: 1.5; display: flex; flex-direction: column; gap: 3.5px; }
+.av-cap-side { flex: 1; display: flex; flex-direction: column; gap: 3.5px; border-left: 1px solid rgba(255,255,255,0.08); padding-left: 5px; }
+.av-cap-pane span, .av-cap-side span { display: block; height: 3px; border-radius: 1.5px; background: rgba(255,255,255,0.16); }
+.av-cap-pane span:first-child { background: color-mix(in srgb, var(--hue) 60%, transparent); }
+/* recording marker */
+.av-rec {
+  position: absolute; top: 11px; right: 11px; z-index: 2;
+  display: flex; align-items: center; gap: 3px;
+  font: 500 6.5px var(--mono); letter-spacing: 0.1em; color: #E7857A;
+}
+.av-rec i { width: 4px; height: 4px; border-radius: 50%; background: #E0574A; animation: avRec 2s ease-in-out infinite; }
+@keyframes avRec { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+/* the shutter flash when a frame is taken */
+.av-shutter {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: #fff; opacity: 0;
+  animation: avShutter 4s ease-out infinite;
+}
+@keyframes avShutter { 0%, 84%, 100% { opacity: 0; } 86% { opacity: 0.5; } 92% { opacity: 0; } }
+/* playback position under the stack */
+.av-scrub {
+  position: absolute; left: 0; right: 0; bottom: -12px; height: 2.5px;
+  border-radius: 99px; background: rgba(255,255,255,0.12); overflow: hidden;
+  transform: translateZ(26px);
+}
+/* scaleX, not width: width is a layout property and this runs continuously.
+   It also fades before rewinding, so the jump back to zero is not seen. */
+.av-scrub i {
+  display: block; width: 100%; height: 100%; border-radius: 99px;
+  background: var(--hue);
+  transform: scaleX(0); transform-origin: left center;
+  animation: avScrub 4s linear infinite;
+}
+@keyframes avScrub {
+  0%   { transform: scaleX(0); opacity: 1; }
+  84%  { transform: scaleX(1); opacity: 1; }
+  92%  { transform: scaleX(1); opacity: 0; }
+  93%  { transform: scaleX(0); opacity: 0; }
+  100% { transform: scaleX(0); opacity: 1; }
+}
+.av-tick {
+  position: absolute; left: 0; bottom: -28px;
+  display: flex; align-items: center; gap: 5px;
+  font: 400 8.5px var(--mono); color: #8C877A;
+  transform: translateZ(26px);
+}
+.av-tick-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--hue);
+  animation: avPulse 4s ease-in-out infinite;
+}
+@keyframes avPulse { 0%, 82%, 100% { opacity: 0.35; } 88% { opacity: 1; box-shadow: 0 0 0 3px color-mix(in srgb, var(--hue) 30%, transparent); } }
+
+/* --- Repository: what grew, what went --- */
+.av-diff { padding: 10px 11px 11px; }
+.av-diff-file { font: 400 9px var(--mono); color: #8C877A; margin-bottom: 8px; }
+.av-row { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+.av-row b { font: 500 9px var(--mono); width: 7px; }
+.av-row i {
+  display: block; height: 5px; border-radius: 2px;
+  transform-origin: left center;
+  animation: avGrow 4s var(--ease) infinite;
+}
+.av-add b { color: #7FC7A4; }
+.av-add i { background: rgba(127, 199, 164, 0.5); }
+.av-del b { color: #C97A5E; }
+.av-del i { background: rgba(201, 122, 94, 0.45); }
+.av-row:nth-child(2) i { animation-delay: .1s; }
+.av-row:nth-child(3) i { animation-delay: .2s; }
+.av-row:nth-child(4) i { animation-delay: .3s; }
+/* ended full and restarted empty, so every cycle closed on a hard snap
+   from scaleX(1) to scaleX(0). It now clears before it rewinds. */
+@keyframes avGrow {
+  0%, 4%    { transform: scaleX(0); opacity: 0; }
+  22%, 82%  { transform: scaleX(1); opacity: 1; }
+  92%       { transform: scaleX(1); opacity: 0; }
+  94%, 100% { transform: scaleX(0); opacity: 0; }
+}
+.av-diff-sum {
+  display: flex; align-items: center; gap: 9px;
+  margin-top: 9px; padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font: 500 9px var(--mono);
+}
+.av-plus { color: #7FC7A4; }
+.av-minus { color: #C97A5E; }
+.av-clean { color: #8C877A; margin-left: auto; }
+
+/* --- AI usage: a prompt, a reply, and whether it was taken as-is --- */
+.av-chat { position: relative; width: 88%; transform-style: preserve-3d; }
+.av-bubble {
+  border-radius: 8px; padding: 8px 9px;
+  background: #1B1A13;
+  box-shadow: 0 8px 16px -10px rgba(20, 18, 12, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+}
+.av-bubble {
+  font: 400 8.5px/1.55 var(--mono);
+  color: #B4AEA0;
+}
+.av-ask { color: color-mix(in srgb, var(--hue) 78%, #EFEAD8); }
+/* 8s, not 5s: twice the 4s the other three diagrams run on, so the four
+   cards stay in phase instead of drifting against each other */
+.av-ask {
+  margin-left: 22%; transform: translateZ(20px);
+  animation: avSend 8s var(--ease) infinite;
+}
+.av-reply {
+  margin-top: 8px; margin-right: 16%;
+  animation: avSend 8s var(--ease) infinite .6s;
+}
+/* held at opacity 1 through 100% and restarted at 0 — the bubbles blinked
+   out of existence once a cycle. They now clear the way they arrived. */
+@keyframes avSend {
+  0%, 3%    { opacity: 0; transform: translateZ(20px) translateY(7px); }
+  12%, 86%  { opacity: 1; transform: translateZ(20px) translateY(0); }
+  96%, 100% { opacity: 0; transform: translateZ(20px) translateY(7px); }
+}
+.av-edited {
+  margin-top: 9px; display: flex; align-items: center; gap: 5px;
+  font: 400 9px var(--mono); color: #8C877A;
+  transform: translateZ(20px);
+}
+.av-caret { color: var(--hue); animation: caretBlink 1.1s steps(1) infinite; }
+@keyframes caretBlink { 0%, 45% { opacity: 1; } 55%, 100% { opacity: 0; } }
+
+/* Every diagram loops forever. Ungated they run from page load, so the
+   section scrolls into view with each card already at some arbitrary point
+   in its own cycle — four unrelated things twitching mid-gesture. Paused
+   until the phase reveals, they all start at 0 together and read as one
+   pipeline. Pipeline.jsx adds .av-go to the grid on intersect, and also
+   when IntersectionObserver is missing, so nothing can strand these
+   paused. The fan-in wires are deliberately not gated here — they live
+   outside .pipe-ex-grid, so .av-go could never reach them. */
+.av-scan, .av-f1, .av-tick-dot, .av-row i, .av-ask, .av-reply,
+.av-rec i, .av-shutter, .av-scrub i { animation-play-state: paused; }
+
+.av-go .av-scan, .av-go .av-f1, .av-go .av-tick-dot, .av-go .av-row i,
+.av-go .av-ask, .av-go .av-reply, .av-go .av-rec i, .av-go .av-shutter,
+.av-go .av-scrub i { animation-play-state: running; }
+
+@media (prefers-reduced-motion: reduce) {
+  .av-scan, .av-f1, .av-tick-dot, .av-row i, .av-ask, .av-reply, .av-caret,
+  .av-rec i, .av-shutter, .av-scrub i { animation: none !important; }
+  .av-scrub i { transform: scaleX(0.62); }
+  .av-shutter { opacity: 0; }
+  .av-row i { transform: scaleX(1); }
+  .av-scan { opacity: 0; }
+  .pipe-ex:hover .av-stage > * { transform: rotateX(9deg) rotateY(-15deg) translateZ(6px); }
+}
+

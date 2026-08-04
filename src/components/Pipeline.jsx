@@ -1,31 +1,13 @@
+import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import Reveal from './Reveal.jsx';
+import AgentVisual from './AgentVisual.jsx';
 
 const EXTRACTORS = [
-  {
-    name: 'OCR interpreter',
-    hue: 'var(--moss)',
-    role: 'Reads the screen',
-    fact: ['{ "t": "12:06",', '  "event": "terminal_command",', '  "command": "npm test" }'],
-  },
-  {
-    name: 'Vision',
-    hue: 'var(--teal)',
-    role: 'Samples every 20s',
-    fact: ['{ "t": "12:07",', '  "event": "window_focus",', '  "app": "VSCode" }'],
-  },
-  {
-    name: 'Repository',
-    hue: 'var(--plum)',
-    role: 'Diffs and analyzes',
-    fact: ['{ "file": "Login.tsx",', '  "added": 18, "removed": 5,', '  "lint_errors": 0 }'],
-  },
-  {
-    name: 'AI usage',
-    hue: 'var(--amber)',
-    role: 'Reads the transcript',
-    fact: ['{ "tool": "Claude",', '  "prompt_len": 250,', '  "edited_after": true }'],
-  },
+  { name: 'OCR interpreter', hue: 'var(--moss)', role: 'Reads the screen', kind: 'ocr' },
+  { name: 'Vision', hue: 'var(--teal)', role: 'Samples every 20s', kind: 'vision' },
+  { name: 'Repository', hue: 'var(--plum)', role: 'Diffs and analyzes', kind: 'repo' },
+  { name: 'AI usage', hue: 'var(--amber)', role: 'Reads the transcript', kind: 'ai' },
 ];
 
 const TIMELINE = [
@@ -56,6 +38,29 @@ const ease = [0.22, 1, 0.36, 1];
 
 export default function Pipeline() {
   const reduce = useReducedMotion();
+
+  // The four agent diagrams loop forever. Ungated they run from page load, so
+  // the section scrolls into view with each card already at an arbitrary point
+  // in its own cycle — four unrelated things twitching mid-gesture. They are
+  // paused in CSS and released together by `.av-go` on the grid, so all four
+  // start at 0 in phase. Bails out to running if IntersectionObserver is
+  // missing: a gate that can fail to arrive would strand them paused forever.
+  const exGrid = useRef(null);
+  const [avGo, setAvGo] = useState(false);
+
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') { setAvGo(true); return; }
+    const el = exGrid.current;
+    if (!el) { setAvGo(true); return; }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) { setAvGo(true); io.disconnect(); }
+      },
+      { rootMargin: '-60px' }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   // staggered one-shot reveal; looping these would leave holes as rows fell out of sync
   const line = (delay) => ({
@@ -89,18 +94,12 @@ export default function Pipeline() {
               No agent scores anything. They emit structured events, so a weak one can be
               swapped without touching the rest.
             </p>
-            <div className="pipe-ex-grid">
-              {EXTRACTORS.map((x, i) => (
+            <div className={`pipe-ex-grid${avGo ? ' av-go' : ''}`} ref={exGrid}>
+              {EXTRACTORS.map((x) => (
                 <div className="pipe-ex" style={{ '--hue': x.hue }} key={x.name}>
                   <p className="pipe-ex-n">{x.name}</p>
                   <p className="pipe-ex-r">{x.role}</p>
-                  <pre className="pipe-json" aria-hidden="true">
-                    {x.fact.map((l, j) => (
-                      <motion.span className="pipe-json-l" key={l} {...line(i * 0.12 + j * 0.1)}>
-                        {l}
-                      </motion.span>
-                    ))}
-                  </pre>
+                  <AgentVisual kind={x.kind} />
                 </div>
               ))}
             </div>
