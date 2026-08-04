@@ -6,7 +6,7 @@
  * filling this in is the entire switch-over — nothing else has to change.
  *
  * Paths are relative to `public/`; BASE_URL is prepended where they are used,
- * so they resolve correctly under the /landing-page/ deploy base.
+ * so they resolve correctly under whatever deploy base is configured.
  *
  * What the render has to contain: docs/hero-video-brief.md
  */
