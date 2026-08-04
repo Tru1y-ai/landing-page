@@ -148,6 +148,7 @@ button { font-family: inherit; }
   50%  { transform: scale(1.14) rotate(4deg) translate(2%, -2%); }
   100% { transform: scale(1.06) rotate(-3deg) translate(-2%, 2%); }
 }
+
 .hero-panel::before {
   content: ""; position: absolute; inset: 0; z-index: -1;
   background: linear-gradient(180deg, rgba(12,28,22,0.34) 0%, rgba(12,28,22,0.12) 45%, rgba(12,28,22,0.42) 100%);
@@ -840,3 +841,20 @@ button { font-family: inherit; }
   .pipe-ex:hover .av-stage > * { transform: rotateX(9deg) rotateY(-15deg) translateZ(6px); }
 }
 
+
+/* ---------- mesh backdrop gating ---------- */
+/* MUST stay last. `animation-play-state` is reset to `running` by every
+   later `animation:` shorthand, and .step-mesh / .pipe-meta-mesh / .cta-mesh
+   all declare theirs further down the file — set earlier, this rule paused
+   only .hero-mesh, the one backdrop that is actually on screen, and left the
+   five off-screen ones running. Exactly backwards, and invisible to tsc,
+   build and lint.
+   Each mesh is a large surface under blur(22-28px) whose `drift` animates
+   scale/rotate, so the blur is re-rasterized every frame and cannot be
+   cached — measured at 1920px, 6.77 megapixels of blur per frame across six
+   elements, five below the fold at load. useMeshGate.js adds .mesh-on once an
+   element is on screen, so first paint pays for the hero alone. will-change
+   rides on the same class: a compositor layer is worth holding while a thing
+   moves, not for the whole session. */
+.hero-mesh, .step-mesh, .pipe-meta-mesh, .cta-mesh { animation-play-state: paused; }
+.mesh-on { animation-play-state: running; will-change: transform; }

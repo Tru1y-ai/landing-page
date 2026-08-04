@@ -8,8 +8,11 @@ import Pricing from './components/Pricing.jsx';
 import Faq from './components/Faq.jsx';
 import Cta from './components/Cta.jsx';
 import Footer from './components/Footer.jsx';
+import useMeshGate from './useMeshGate.js';
 
 export default function App() {
+  useMeshGate();
+
   return (
     <>
       <Nav />
