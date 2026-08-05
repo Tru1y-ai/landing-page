@@ -13,22 +13,27 @@
     <link rel="canonical" href="https://trulyta.com/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
 
-    <!-- Social cards. og:image is the logo as a stopgap; it wants a
-         purpose-made 1200x630 so shared links render a proper wide card
-         rather than a crop. The URL must be absolute — scrapers fetch it
-         without a document base, so a root-relative path resolves against
-         their own host and the card renders with no image at all. -->
+    <!-- Social cards. og.jpg is a purpose-made 1200x630 built from the same
+         brand tokens as the site (see the hero mesh recipe in index.css), so
+         a shared link renders a proper wide card rather than a crop of the
+         square logo. The URL must be absolute — scrapers fetch it without a
+         document base, so a root-relative path resolves against their own
+         host and the card renders with no image at all. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Truly" />
     <meta property="og:url" content="https://trulyta.com/" />
     <meta property="og:title" content="Truly — Hire for the work, not the interview." />
     <meta property="og:description" content="Job-specific work simulations. Candidates work on their own machine — AI evaluators turn the full session into evidence you can hire on." />
-    <meta property="og:image" content="https://trulyta.com/truly-logo.png" />
-    <meta property="og:image:alt" content="Truly" />
+    <meta property="og:image" content="https://trulyta.com/og.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Truly — hire for the work, not the interview." />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Truly — Hire for the work, not the interview." />
     <meta name="twitter:description" content="Job-specific work simulations. Candidates work on their own machine — AI evaluators turn the full session into evidence you can hire on." />
-    <meta name="twitter:image" content="https://trulyta.com/truly-logo.png" />
+    <meta name="twitter:image" content="https://trulyta.com/og.jpg" />
+    <meta name="twitter:image:alt" content="Truly — hire for the work, not the interview." />
     <meta name="theme-color" content="#14563E" />
 
     <!-- The page is client-rendered, so a crawler that does not run JS sees an
