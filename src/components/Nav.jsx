@@ -23,7 +23,7 @@ export default function Nav() {
           <a className="nav-link" href="#why">Why Truly</a>
           <a className="nav-link" href="#pricing">Pricing</a>
           <a className="nav-link" href="#faq">FAQ</a>
-          <a className="nav-link" href="https://app.trulyta.com" target="_blank" rel="noopener noreferrer">Log in</a>
+          <a className="nav-link" href="https://app.trulyta.com">Log in</a>
           <a className="btn btn-ink" href={CAL_URL} target="_blank" rel="noopener noreferrer">Book a demo</a>
         </nav>
       </div>
