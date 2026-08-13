@@ -842,6 +842,137 @@ button { font-family: inherit; }
 }
 
 
+
+/* ---------- evaluator chip (EvidenceChip.jsx) ---------- */
+/* A circuit board, not a flowchart: traces are orthogonal and a signal runs
+   each one into the die. Geometry is owned by the SVG viewBox (900x500) —
+   the chip and report are positioned in percentages derived from it, which
+   works because the stage holds that exact aspect ratio. */
+.ec-sec { border-top: 1px solid var(--line); }
+.ec-stage {
+  position: relative;
+  margin-top: 42px;
+  width: 100%;
+  aspect-ratio: 900 / 500;
+  border-radius: var(--r);
+  background:
+    radial-gradient(60% 70% at 50% 45%, rgba(47,107,74,0.16) 0%, transparent 70%),
+    var(--screen);
+  box-shadow: 0 30px 60px -40px rgba(27,26,21,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
+  overflow: hidden;
+}
+.ec-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.ec-grid { color: rgba(255,255,255,0.05); }
+
+.ec-trace {
+  fill: none;
+  stroke: rgba(255,255,255,0.14);
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* pathLength=100 normalises every trace, so one dash spec fits all of them
+   and the cycle closes exactly on 100 — no jump when it restarts. */
+.ec-pulse {
+  fill: none;
+  stroke: var(--hue, var(--green-2));
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 6 94;
+  stroke-dashoffset: 100;
+  filter: drop-shadow(0 0 3px var(--hue, var(--green-2)));
+  opacity: 0;
+}
+/* Gated by applying the animation only under .ec-live rather than pausing it:
+   a later `animation:` shorthand cannot silently reset play-state this way. */
+.ec-live .ec-pulse {
+  opacity: 1;
+  animation: ecPulse 4s linear infinite;
+  animation-delay: calc(var(--i, 0) * 0.45s);
+}
+@keyframes ecPulse {
+  0%   { stroke-dashoffset: 100; }
+  100% { stroke-dashoffset: 0; }
+}
+/* the report feed fires after the inputs have landed */
+.ec-live .ec-out-pulse { animation: ecPulse 4s linear infinite 2.4s; }
+.ec-out, .ec-out-pulse { --hue: var(--green-2); }
+
+.ec-pad { fill: var(--hue, var(--green-2)); }
+.ec-live .ec-pad { animation: ecPad 4s ease-in-out infinite; animation-delay: calc(var(--i, 0) * 0.45s); }
+@keyframes ecPad {
+  0%, 70%, 100% { opacity: 0.45; }
+  6%            { opacity: 1; }
+}
+.ec-name { fill: #E7E2D4; font: 500 15px var(--sans); letter-spacing: -0.01em; }
+.ec-sees { fill: #8C877A; font: 400 11px var(--mono); }
+
+/* --- the die --- */
+.ec-chip {
+  position: absolute; left: 50%; top: 43%;
+  width: 14.4%; aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+}
+.ec-die {
+  position: absolute; inset: 0;
+  border-radius: 10px;
+  background: linear-gradient(155deg, #23221A 0%, #12110C 60%);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.09) inset,
+    0 10px 26px -12px rgba(0,0,0,0.8),
+    0 0 26px -6px rgba(30,122,87,0.5);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+}
+.ec-die-k { font: 600 11px var(--mono); letter-spacing: 0.14em; color: var(--green-2); }
+.ec-die-n { font: 400 9.5px var(--mono); color: #8C877A; }
+.ec-live .ec-die { animation: ecDie 4s ease-in-out infinite 2s; }
+@keyframes ecDie {
+  0%, 82%, 100% { box-shadow: 0 0 0 1px rgba(255,255,255,0.09) inset, 0 10px 26px -12px rgba(0,0,0,.8), 0 0 26px -6px rgba(30,122,87,0.5); }
+  88%           { box-shadow: 0 0 0 1px rgba(30,122,87,0.7) inset, 0 10px 26px -12px rgba(0,0,0,.8), 0 0 40px -2px rgba(30,122,87,0.85); }
+}
+/* package legs */
+.ec-pins { position: absolute; display: flex; gap: 14%; }
+.ec-pins i { background: rgba(255,255,255,0.28); border-radius: 1px; display: block; }
+.ec-pins-l, .ec-pins-r { top: 50%; transform: translateY(-50%); flex-direction: column; height: 62%; }
+.ec-pins-l { left: -7%; } .ec-pins-r { right: -7%; }
+.ec-pins-l i, .ec-pins-r i { width: 7px; height: 2px; }
+.ec-pins-t, .ec-pins-b { left: 50%; transform: translateX(-50%); width: 62%; justify-content: space-between; }
+.ec-pins-t { top: -7%; } .ec-pins-b { bottom: -7%; }
+.ec-pins-t i, .ec-pins-b i { width: 2px; height: 7px; }
+
+/* --- the report --- */
+.ec-report {
+  position: absolute; left: 50%; top: 90%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  padding: 10px 12px 11px;
+  border-radius: 7px;
+  background: #FAF9F5;
+  box-shadow: 0 14px 30px -16px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.12);
+}
+.ec-report-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.ec-report-bar span { width: 6px; height: 6px; border-radius: 50%; background: var(--green-2); }
+.ec-report-bar em { font: 500 9.5px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-style: normal; }
+.ec-report-rows { display: flex; flex-direction: column; gap: 5px; }
+.ec-report-rows span { display: block; height: 4px; border-radius: 2px; background: rgba(27,26,21,0.16); }
+.ec-report-foot { margin-top: 9px; font: 400 9px var(--mono); color: var(--faint); }
+.ec-live .ec-report { animation: ecReport 4s ease-out infinite 2.4s; }
+@keyframes ecReport {
+  0%, 68%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 14px 30px -16px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.12); }
+  76%           { transform: translate(-50%, -50%) scale(1.035); box-shadow: 0 16px 34px -14px rgba(0,0,0,.7), 0 0 0 1px rgba(30,122,87,.55); }
+}
+
+@media (max-width: 760px) {
+  .ec-name { font-size: 19px; }
+  .ec-sees { display: none; }
+  .ec-report { width: 40%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ec-live .ec-pulse, .ec-live .ec-pad, .ec-live .ec-die, .ec-live .ec-report { animation: none !important; }
+  .ec-pulse { opacity: 0.9; stroke-dashoffset: 40; }
+}
+
 /* ---------- mesh backdrop gating ---------- */
 /* MUST stay last. `animation-play-state` is reset to `running` by every
    later `animation:` shorthand, and .step-mesh / .pipe-meta-mesh / .cta-mesh

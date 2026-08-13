@@ -3,6 +3,7 @@ import Hero from './components/Hero.jsx';
 import Problem from './components/Problem.jsx';
 import How from './components/How.jsx';
 import Pipeline from './components/Pipeline.jsx';
+import EvidenceChip from './components/EvidenceChip.jsx';
 import Why from './components/Why.jsx';
 import Pricing from './components/Pricing.jsx';
 import Faq from './components/Faq.jsx';
@@ -20,6 +21,7 @@ export default function App() {
       <Problem />
       <How />
       <Pipeline />
+      <EvidenceChip />
       <Why />
       <Pricing />
       <Faq />
