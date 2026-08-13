@@ -844,10 +844,14 @@ button { font-family: inherit; }
 
 
 /* ---------- evaluator chip (EvidenceChip.jsx) ---------- */
-/* A circuit board, not a flowchart: traces are orthogonal and a signal runs
-   each one into the die. Geometry is owned by the SVG viewBox (900x500) —
-   the chip and report are positioned in percentages derived from it, which
-   works because the stage holds that exact aspect ratio. */
+/* A circuit board, not a flowchart. One 8s cycle: signals travel in, the pins
+   they land on fire, the die computes, the verdict travels out, the report
+   writes itself, everything clears. Every keyframe set below returns to its
+   0% state by 100% — an infinite loop that ends anywhere else snaps once per
+   period, which reads as "it looks weird" rather than as a specific bug.
+   Geometry is owned by the SVG viewBox (900x500); the die and report are
+   placed in percentages derived from it, which works because the stage holds
+   that exact aspect ratio. */
 .ec-sec { border-top: 1px solid var(--line); }
 .ec-stage {
   position: relative;
@@ -856,121 +860,182 @@ button { font-family: inherit; }
   aspect-ratio: 900 / 500;
   border-radius: var(--r);
   background:
-    radial-gradient(60% 70% at 50% 45%, rgba(47,107,74,0.16) 0%, transparent 70%),
-    var(--screen);
+    radial-gradient(58% 66% at 50% 44%, rgba(30,122,87,0.18) 0%, transparent 72%),
+    linear-gradient(180deg, #1B1A13 0%, var(--screen) 55%, #121109 100%);
   box-shadow: 0 30px 60px -40px rgba(27,26,21,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
   overflow: hidden;
 }
 .ec-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.ec-grid { color: rgba(255,255,255,0.05); }
+.ec-grid { color: rgba(255,255,255,0.045); }
+
+/* board furniture */
+.ec-silk text { fill: rgba(255,255,255,0.16); font: 500 10px var(--mono); letter-spacing: 0.18em; }
+.ec-silk circle { fill: none; stroke: rgba(255,255,255,0.13); stroke-width: 1.5; }
 
 .ec-trace {
-  fill: none;
-  stroke: rgba(255,255,255,0.14);
-  stroke-width: 1.25;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  fill: none; stroke: rgba(255,255,255,0.13); stroke-width: 1.25;
+  stroke-linecap: round; stroke-linejoin: round;
 }
-/* pathLength=100 normalises every trace, so one dash spec fits all of them
-   and the cycle closes exactly on 100 — no jump when it restarts. */
+.ec-smd { fill: rgba(255,255,255,0.10); stroke: rgba(255,255,255,0.16); stroke-width: 0.75; }
+
+/* --- the travelling signal --- */
 .ec-pulse {
-  fill: none;
-  stroke: var(--hue, var(--green-2));
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 6 94;
-  stroke-dashoffset: 100;
-  filter: drop-shadow(0 0 3px var(--hue, var(--green-2)));
+  fill: none; stroke: var(--hue, var(--green-2)); stroke-width: 2.25;
+  stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 7 93; stroke-dashoffset: 100;
+  filter: drop-shadow(0 0 4px var(--hue, var(--green-2)));
   opacity: 0;
 }
-/* Gated by applying the animation only under .ec-live rather than pausing it:
-   a later `animation:` shorthand cannot silently reset play-state this way. */
-.ec-live .ec-pulse {
-  opacity: 1;
-  animation: ecPulse 4s linear infinite;
-  animation-delay: calc(var(--i, 0) * 0.45s);
-}
+/* Applied under .ec-live rather than declared-and-paused: a later
+   animation shorthand cannot silently reset play-state this way. */
+.ec-live .ec-pulse { animation: ecPulse 8s linear infinite; animation-delay: calc(var(--i, 0) * 0.12s); }
 @keyframes ecPulse {
-  0%   { stroke-dashoffset: 100; }
-  100% { stroke-dashoffset: 0; }
+  0%        { stroke-dashoffset: 100; opacity: 0; }
+  3%        { opacity: 1; }
+  23%       { stroke-dashoffset: 0; opacity: 1; }
+  27%, 100% { stroke-dashoffset: 0; opacity: 0; }
 }
-/* the report feed fires after the inputs have landed */
-.ec-live .ec-out-pulse { animation: ecPulse 4s linear infinite 2.4s; }
 .ec-out, .ec-out-pulse { --hue: var(--green-2); }
-
-.ec-pad { fill: var(--hue, var(--green-2)); }
-.ec-live .ec-pad { animation: ecPad 4s ease-in-out infinite; animation-delay: calc(var(--i, 0) * 0.45s); }
-@keyframes ecPad {
-  0%, 70%, 100% { opacity: 0.45; }
-  6%            { opacity: 1; }
+.ec-live .ec-out-pulse { animation: ecOut 8s linear infinite; }
+@keyframes ecOut {
+  0%, 55%   { stroke-dashoffset: 100; opacity: 0; }
+  57%       { opacity: 1; }
+  70%       { stroke-dashoffset: 0; opacity: 1; }
+  73%, 100% { stroke-dashoffset: 0; opacity: 0; }
 }
-.ec-name { fill: #E7E2D4; font: 500 15px var(--sans); letter-spacing: -0.01em; }
-.ec-sees { fill: #8C877A; font: 400 11px var(--mono); }
+
+/* --- solder pad, plus a halo that expands as the signal leaves it --- */
+.ec-pad { fill: var(--hue, var(--green-2)); opacity: 0.4; }
+.ec-live .ec-pad { animation: ecPad 8s ease-out infinite; animation-delay: calc(var(--i, 0) * 0.12s); }
+@keyframes ecPad { 0%, 22%, 100% { opacity: 0.4; } 3% { opacity: 1; } }
+.ec-halo { fill: none; stroke: var(--hue, var(--green-2)); stroke-width: 1.5; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.ec-live .ec-halo { animation: ecHalo 8s ease-out infinite; animation-delay: calc(var(--i, 0) * 0.12s); }
+@keyframes ecHalo {
+  0%        { transform: scale(1); opacity: 0.9; }
+  12%, 100% { transform: scale(3.2); opacity: 0; }
+}
 
 /* --- the die --- */
-.ec-chip {
-  position: absolute; left: 50%; top: 43%;
-  width: 14.4%; aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-}
+.ec-chip { position: absolute; left: 50%; top: 43%; width: 14.4%; aspect-ratio: 1; transform: translate(-50%, -50%); }
 .ec-die {
-  position: absolute; inset: 0;
-  border-radius: 10px;
-  background: linear-gradient(155deg, #23221A 0%, #12110C 60%);
+  position: absolute; inset: 0; border-radius: 10px; overflow: hidden;
+  background: linear-gradient(155deg, #24231A 0%, #100F0A 62%);
   box-shadow:
     0 0 0 1px rgba(255,255,255,0.09) inset,
-    0 10px 26px -12px rgba(0,0,0,0.8),
-    0 0 26px -6px rgba(30,122,87,0.5);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    0 10px 26px -12px rgba(0,0,0,0.85),
+    0 0 22px -8px rgba(30,122,87,0.45);
 }
-.ec-die-k { font: 600 11px var(--mono); letter-spacing: 0.14em; color: var(--green-2); }
-.ec-die-n { font: 400 9.5px var(--mono); color: #8C877A; }
-.ec-live .ec-die { animation: ecDie 4s ease-in-out infinite 2s; }
+.ec-live .ec-die { animation: ecDie 8s ease-out infinite; }
 @keyframes ecDie {
-  0%, 82%, 100% { box-shadow: 0 0 0 1px rgba(255,255,255,0.09) inset, 0 10px 26px -12px rgba(0,0,0,.8), 0 0 26px -6px rgba(30,122,87,0.5); }
-  88%           { box-shadow: 0 0 0 1px rgba(30,122,87,0.7) inset, 0 10px 26px -12px rgba(0,0,0,.8), 0 0 40px -2px rgba(30,122,87,0.85); }
+  0%, 50%, 100% { box-shadow: 0 0 0 1px rgba(255,255,255,.09) inset, 0 10px 26px -12px rgba(0,0,0,.85), 0 0 22px -8px rgba(30,122,87,.45); }
+  55%           { box-shadow: 0 0 0 1px rgba(71,184,129,.75) inset, 0 10px 26px -12px rgba(0,0,0,.85), 0 0 46px 0 rgba(30,122,87,.9); }
 }
-/* package legs */
-.ec-pins { position: absolute; display: flex; gap: 14%; }
-.ec-pins i { background: rgba(255,255,255,0.28); border-radius: 1px; display: block; }
-.ec-pins-l, .ec-pins-r { top: 50%; transform: translateY(-50%); flex-direction: column; height: 62%; }
+/* silicon: 25 cells lighting in sequence while the die computes */
+.ec-core { position: absolute; inset: 12%; display: grid; grid-template-columns: repeat(5, 1fr); gap: 7%; }
+.ec-core i { display: block; border-radius: 1.5px; background: rgba(255,255,255,0.05); }
+/* --c arrives already scattered from JS, so the cells light in a broken order
+   and read as computation rather than a sweep. Scattering here would need
+   CSS mod(), which is too new to rely on. */
+.ec-live .ec-core i { animation: ecCell 8s ease-out infinite; animation-delay: calc(2s + var(--c) * 0.055s); }
+@keyframes ecCell {
+  0%, 100% { background: rgba(255,255,255,0.05); }
+  4%       { background: rgba(71,184,129,0.85); }
+  14%      { background: rgba(71,184,129,0.16); }
+  30%      { background: rgba(255,255,255,0.05); }
+}
+/* read head crossing the die */
+.ec-scan {
+  position: absolute; left: 0; right: 0; top: 0; height: 26%;
+  background: linear-gradient(180deg, transparent, rgba(71,184,129,0.22), transparent);
+  border-bottom: 1px solid rgba(71,184,129,0.55);
+  opacity: 0; pointer-events: none;
+}
+.ec-live .ec-scan { animation: ecScan 8s ease-in-out infinite; }
+@keyframes ecScan {
+  0%, 24%   { transform: translateY(-26%); opacity: 0; }
+  28%       { opacity: 1; }
+  50%       { transform: translateY(400%); opacity: 1; }
+  55%, 100% { transform: translateY(400%); opacity: 0; }
+}
+/* The label sits over 25 cells that light up behind it, so it needs its own
+   scrim — without one the lit cells swallow it completely for a third of
+   every cycle. */
+.ec-die-label {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2px;
+  background: radial-gradient(52% 34% at 50% 50%, rgba(12,11,7,0.94) 0%, rgba(12,11,7,0.8) 55%, transparent 100%);
+}
+.ec-die-k { font: 600 11px var(--mono); letter-spacing: 0.14em; color: #6FD9A6; text-shadow: 0 0 10px rgba(30,122,87,0.9); }
+.ec-die-n { font: 400 9.5px var(--mono); color: #A9A395; }
+.ec-live .ec-die-k { animation: ecLatch 8s ease-out infinite; }
+@keyframes ecLatch { 0%, 50%, 100% { color: var(--green-2); } 55% { color: #8FE8BC; } }
+
+/* package legs, lit by the signal that lands on them */
+.ec-pins { position: absolute; display: flex; }
+.ec-pins i { background: rgba(255,255,255,0.26); border-radius: 1px; display: block; }
+.ec-pins-l, .ec-pins-r { top: 50%; transform: translateY(-50%); flex-direction: column; height: 62%; justify-content: space-between; }
 .ec-pins-l { left: -7%; } .ec-pins-r { right: -7%; }
 .ec-pins-l i, .ec-pins-r i { width: 7px; height: 2px; }
 .ec-pins-t, .ec-pins-b { left: 50%; transform: translateX(-50%); width: 62%; justify-content: space-between; }
 .ec-pins-t { top: -7%; } .ec-pins-b { bottom: -7%; }
 .ec-pins-t i, .ec-pins-b i { width: 2px; height: 7px; }
+.ec-live .ec-pins i { animation: ecPin 8s ease-out infinite; }
+.ec-live .ec-pins-l i:nth-child(1) { animation-delay: 1.85s; }
+.ec-live .ec-pins-l i:nth-child(2) { animation-delay: 1.97s; }
+.ec-live .ec-pins-l i:nth-child(3) { animation-delay: 2.09s; }
+.ec-live .ec-pins-r i:nth-child(1) { animation-delay: 2.21s; }
+.ec-live .ec-pins-r i:nth-child(2) { animation-delay: 2.33s; }
+.ec-live .ec-pins-r i:nth-child(3) { animation-delay: 2.45s; }
+.ec-live .ec-pins-t i, .ec-live .ec-pins-b i { animation-delay: 4.5s; }
+@keyframes ecPin {
+  0%, 100% { background: rgba(255,255,255,0.26); box-shadow: none; }
+  2%       { background: #8FE8BC; box-shadow: 0 0 7px rgba(71,184,129,0.9); }
+  12%      { background: rgba(255,255,255,0.26); box-shadow: none; }
+}
 
-/* --- the report --- */
+/* --- the report, written a row at a time --- */
 .ec-report {
-  position: absolute; left: 50%; top: 90%;
-  transform: translate(-50%, -50%);
-  width: 30%;
-  padding: 10px 12px 11px;
-  border-radius: 7px;
-  background: #FAF9F5;
-  box-shadow: 0 14px 30px -16px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.12);
+  position: absolute; left: 50%; top: 90%; transform: translate(-50%, -50%);
+  width: 31%; padding: 10px 12px 11px; border-radius: 7px; background: #FAF9F5;
+  box-shadow: 0 14px 30px -16px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.12);
+}
+.ec-live .ec-report { animation: ecReport 8s ease-out infinite; }
+@keyframes ecReport {
+  0%, 68%, 100% { transform: translate(-50%,-50%) scale(1); box-shadow: 0 14px 30px -16px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.12); }
+  73%           { transform: translate(-50%,-50%) scale(1.03); box-shadow: 0 16px 34px -14px rgba(0,0,0,.75), 0 0 0 1px rgba(30,122,87,.6); }
 }
 .ec-report-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
 .ec-report-bar span { width: 6px; height: 6px; border-radius: 50%; background: var(--green-2); }
+.ec-live .ec-report-bar span { animation: ecDot 8s ease-out infinite; }
+@keyframes ecDot { 0%, 68%, 100% { box-shadow: none; } 73% { box-shadow: 0 0 0 4px rgba(30,122,87,0.22); } }
 .ec-report-bar em { font: 500 9.5px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-style: normal; }
-.ec-report-rows { display: flex; flex-direction: column; gap: 5px; }
-.ec-report-rows span { display: block; height: 4px; border-radius: 2px; background: rgba(27,26,21,0.16); }
+.ec-report-rows { display: flex; flex-direction: column; gap: 6px; }
+.ec-rrow { display: flex; align-items: center; gap: 7px; opacity: 0; }
+.ec-rrow b { font: 500 8.5px var(--sans); color: var(--muted); width: 34%; text-align: left; }
+.ec-rrow i { flex: 1; height: 4px; border-radius: 2px; background: rgba(27,26,21,0.10); overflow: hidden; }
+.ec-rrow i s { display: block; height: 100%; border-radius: 2px; background: var(--green-2); transform: scaleX(0); transform-origin: left center; }
+.ec-rrow u { font: 500 8.5px var(--mono); color: var(--ink); text-decoration: none; }
+.ec-live .ec-rrow { animation: ecRow 8s ease-out infinite; animation-delay: calc(5.4s + var(--r) * 0.22s); }
+@keyframes ecRow { 0%, 100% { opacity: 0; } 3%, 20% { opacity: 1; } }
+.ec-live .ec-rrow i s { animation: ecFill 8s var(--ease) infinite; animation-delay: calc(5.45s + var(--r) * 0.22s); }
+@keyframes ecFill { 0%, 100% { transform: scaleX(0); } 6%, 20% { transform: scaleX(1); } }
 .ec-report-foot { margin-top: 9px; font: 400 9px var(--mono); color: var(--faint); }
-.ec-live .ec-report { animation: ecReport 4s ease-out infinite 2.4s; }
-@keyframes ecReport {
-  0%, 68%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 14px 30px -16px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.12); }
-  76%           { transform: translate(-50%, -50%) scale(1.035); box-shadow: 0 16px 34px -14px rgba(0,0,0,.7), 0 0 0 1px rgba(30,122,87,.55); }
-}
 
 @media (max-width: 760px) {
   .ec-name { font-size: 19px; }
-  .ec-sees { display: none; }
-  .ec-report { width: 40%; }
+  .ec-sees, .ec-silk { display: none; }
+  .ec-report { width: 44%; }
+  .ec-rrow b { font-size: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ec-live .ec-pulse, .ec-live .ec-pad, .ec-live .ec-die, .ec-live .ec-report { animation: none !important; }
-  .ec-pulse { opacity: 0.9; stroke-dashoffset: 40; }
+  .ec-live .ec-pulse, .ec-live .ec-pad, .ec-live .ec-halo, .ec-live .ec-die,
+  .ec-live .ec-core i, .ec-live .ec-scan, .ec-live .ec-pins i, .ec-live .ec-report,
+  .ec-live .ec-rrow, .ec-live .ec-rrow i s, .ec-live .ec-die-k, .ec-live .ec-report-bar span,
+  .ec-live .ec-out-pulse { animation: none !important; }
+  .ec-pulse { opacity: 0.9; stroke-dashoffset: 45; }
+  .ec-rrow { opacity: 1; }
+  .ec-rrow i s { transform: scaleX(1); }
+  .ec-scan { opacity: 0; }
 }
 
 /* ---------- mesh backdrop gating ---------- */
