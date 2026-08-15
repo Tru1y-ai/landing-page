@@ -3,11 +3,14 @@ import { motion, useReducedMotion } from 'framer-motion';
 import Reveal from './Reveal.jsx';
 import AgentVisual from './AgentVisual.jsx';
 
+// Named for the signal each one is looking for, not the technique it uses to
+// find it. The mechanism is not the pitch, and it is not something a landing
+// page should hand to a competitor.
 const EXTRACTORS = [
-  { name: 'OCR interpreter', hue: 'var(--moss)', role: 'Reads the screen', kind: 'ocr' },
-  { name: 'Vision', hue: 'var(--teal)', role: 'Samples every 20s', kind: 'vision' },
-  { name: 'Repository', hue: 'var(--plum)', role: 'Diffs and analyzes', kind: 'repo' },
-  { name: 'AI usage', hue: 'var(--amber)', role: 'Reads the transcript', kind: 'ai' },
+  { name: 'Session activity', hue: 'var(--moss)', role: 'What was opened, run, and changed', kind: 'ocr' },
+  { name: 'Working process', hue: 'var(--teal)', role: 'How the approach evolved', kind: 'vision' },
+  { name: 'Code and changes', hue: 'var(--plum)', role: 'What the work produced', kind: 'repo' },
+  { name: 'AI collaboration', hue: 'var(--amber)', role: 'Whether output was checked or taken', kind: 'ai' },
 ];
 
 const TIMELINE = [

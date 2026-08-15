@@ -49,7 +49,7 @@ function Vision() {
         <div className="av-shutter" />
       </div>
       <div className="av-scrub"><i /></div>
-      <div className="av-tick"><span className="av-tick-dot" />frame every 20s</div>
+      <div className="av-tick"><span className="av-tick-dot" />session timeline</div>
     </div>
   );
 }
