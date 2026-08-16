@@ -1,4 +1,4 @@
-import { CAL_URL } from '../links.js';
+import { CAL_URL, CONTACT_EMAIL } from '../links.js';
 
 export default function Footer() {
   return (
@@ -23,6 +23,7 @@ export default function Footer() {
               <h4>Company</h4>
               <a href="#faq">FAQ</a>
               <a href={CAL_URL} target="_blank" rel="noopener noreferrer">Book a demo</a>
+              <a href={`mailto:${CONTACT_EMAIL}`}>Contact us</a>
             </div>
           </div>
         </div>
