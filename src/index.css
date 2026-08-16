@@ -1052,6 +1052,13 @@ button { font-family: inherit; }
    elements, five below the fold at load. useMeshGate.js adds .mesh-on once an
    element is on screen, so first paint pays for the hero alone. will-change
    rides on the same class: a compositor layer is worth holding while a thing
-   moves, not for the whole session. */
-.step-mesh, .pipe-meta-mesh, .cta-mesh { animation-play-state: paused; }
+   moves, not for the whole session.
+   The card fan belongs here too: three .fan-mesh are 1.9 megapixels of
+   animated blur, and three .fan-edge each repaint a conic gradient through a
+   mask every frame — a custom property (--reflect-angle) cannot be composited,
+   so that one lands on the main thread. All six sit ~2200px down, running from
+   first paint, which is what made the opening seconds stutter.
+   .fan-edge animates no transform, so it opts out of the layer hint. */
+.step-mesh, .pipe-meta-mesh, .cta-mesh, .fan-mesh, .fan-edge { animation-play-state: paused; }
 .mesh-on { animation-play-state: running; will-change: transform; }
+.fan-edge.mesh-on { will-change: auto; }

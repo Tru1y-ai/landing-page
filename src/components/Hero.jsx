@@ -172,12 +172,16 @@ export default function Hero() {
   return (
     <>
     <section className="hero" id="top" ref={root}>
+      {/* preload="auto", not "metadata": this autoplays the moment it can, so
+          metadata-only left it with nothing buffered at play() — a visible
+          stall, then a rush to catch up. hero-poster.jpg must stay frame 0 of
+          hero.mp4; any other frame shows as a hard cut when the film swaps in. */}
       <video
         ref={videoRef}
         className="hero-video"
         muted
         playsInline
-        preload="metadata"
+        preload="auto"
         poster="/hero-poster.jpg"
         aria-hidden="true"
       >
