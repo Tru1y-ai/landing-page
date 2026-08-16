@@ -6,6 +6,16 @@ import { CAL_URL } from '../links.js';
 
 gsap.registerPlugin(useGSAP, SplitText);
 
+/* the six tabs on the report, named */
+const DIMENSIONS = [
+  { k: 'Planning', s: 'how they broke the problem down', hue: 'var(--moss)' },
+  { k: 'Architecture', s: 'the shape of what they built', hue: 'var(--teal)' },
+  { k: 'Debugging', s: 'what they did when it broke', hue: 'var(--plum)' },
+  { k: 'Testing', s: 'what they checked before shipping', hue: 'var(--amber)' },
+  { k: 'AI collaboration', s: 'how they used the tools', hue: 'var(--clay)' },
+  { k: 'Communication', s: 'how they wrote it up', hue: 'var(--green-2)' },
+];
+
 const LOG = [
   { t: '00:02', text: <>opened <b>checkout-service</b> repo, read the ticket</> },
   { t: '00:07', text: <>sketched approach in <b>NOTES.md</b> before coding</>, tag: 'design' },
@@ -26,6 +36,8 @@ const SCORES = [
 
 export default function Hero() {
   const root = useRef(null);
+  const videoRef = useRef(null);
+  const replayRef = useRef(null);
   const btnRefs = useRef([]);
   btnRefs.current = [];
   const addBtnRef = (el) => { if (el && !btnRefs.current.includes(el)) btnRefs.current.push(el); };
@@ -40,40 +52,96 @@ export default function Hero() {
 
         const split = new SplitText('.h1', { type: 'words', wordsClass: 'h1-word', tag: 'span' });
 
-        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        /* paused — the film finishing is what starts this */
+        const tl = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
 
-        tl.from('.hero-mesh', { autoAlpha: 0, scale: 1.22, duration: reduce ? 0 : 1.4, ease: 'power2.out' }, 0)
-          .from('.hero .eyebrow', { autoAlpha: 0, y: 14, duration: reduce ? 0 : 0.6 }, reduce ? 0 : 0.15)
+        tl.from('.hero .eyebrow', { autoAlpha: 0, y: 14, duration: 0.6 }, 0)
           .from(split.words, {
             autoAlpha: 0,
             y: 34,
             filter: 'blur(10px)',
-            stagger: reduce ? 0 : 0.06,
-            duration: reduce ? 0 : 0.75,
-          }, reduce ? 0 : 0.22)
-          .from('.hero-sub', { autoAlpha: 0, y: 16, duration: reduce ? 0 : 0.6 }, reduce ? 0 : '-=0.35')
-          .from('.hero-cta .btn', { autoAlpha: 0, y: 14, stagger: reduce ? 0 : 0.08, duration: reduce ? 0 : 0.55 }, reduce ? 0 : '-=0.3')
-          .from('.hero-note', { autoAlpha: 0, duration: reduce ? 0 : 0.5 }, reduce ? 0 : '-=0.25')
-          .from('.replay', {
-            autoAlpha: 0,
-            y: reduce ? 0 : 40,
-            scale: reduce ? 1 : 0.97,
-            duration: reduce ? 0 : 0.85,
-            ease: 'power3.out',
-          }, reduce ? 0 : '-=0.3')
-          .from('.score-bar i', {
-            width: 0,
-            stagger: reduce ? 0 : 0.12,
-            duration: reduce ? 0 : 0.9,
-            ease: 'power2.out',
-          }, reduce ? 0 : '-=0.4')
-          .from('.score-top b', {
-            textContent: 0,
-            duration: reduce ? 0 : 1,
-            snap: { textContent: 1 },
-            stagger: reduce ? 0 : 0.12,
-            ease: 'power1.out',
-          }, '<');
+            stagger: 0.06,
+            duration: 0.75,
+          }, 0.07)
+          .from('.hero-sub', { autoAlpha: 0, y: 16, duration: 0.6 }, '-=0.35')
+          .from('.hero-cta .btn', { autoAlpha: 0, y: 14, stagger: 0.08, duration: 0.55 }, '-=0.3')
+          .from('.hero-note', { autoAlpha: 0, duration: 0.5 }, '-=0.25')
+          .from('.hero-note-item', { autoAlpha: 0, x: -10, stagger: 0.07, duration: 0.5 }, '-=0.4');
+
+        const video = videoRef.current;
+        let failsafe;
+        let onTime;
+
+        /* The replay window is outside the GSAP scope (different section), so it
+           gets its own tween. Explicit set + to rather than from(): a paused
+           from() did not reliably render its start state here, which left the
+           window visible from the first frame. */
+        gsap.set(replayRef.current, { autoAlpha: 0, y: 56 });
+        const panel = gsap.to(replayRef.current, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          paused: true,
+        });
+
+        if (reduce || !video) {
+          /* the resting state is the finished state — never an empty hero */
+          tl.progress(1);
+          gsap.set(replayRef.current, { autoAlpha: 1, y: 0 });
+        } else {
+          let started = false;
+          let panelShown = false;
+
+          const revealPanel = () => {
+            if (panelShown) return;
+            panelShown = true;
+            panel.play();
+          };
+
+          const reveal = () => {
+            if (started) return;
+            started = true;
+            clearTimeout(failsafe);
+            revealPanel();
+            tl.play();
+          };
+
+          /* The failsafe must not animate. A tween only advances on rAF, which a
+             background tab throttles or suspends outright — so playing one here
+             can leave the copy and the window hidden indefinitely. Jump straight
+             to the finished state instead. */
+          const showNow = () => {
+            if (started) return;
+            started = true;
+            panelShown = true;
+            gsap.set(replayRef.current, { autoAlpha: 1, y: 0 });
+            tl.progress(1);
+          };
+
+          /* the window slides up as the film settles, a beat ahead of the copy */
+          onTime = () => {
+            if (!video.duration) return;
+            if (video.duration - video.currentTime <= 1.2) {
+              revealPanel();
+              video.removeEventListener('timeupdate', onTime);
+            }
+          };
+          video.addEventListener('timeupdate', onTime);
+
+          /* a touch quicker than real time — set on metadata too, since some
+             browsers reset the rate when a new source is loaded */
+          const RATE = 1.2;
+          video.playbackRate = RATE;
+          video.addEventListener('loadedmetadata', () => { video.playbackRate = RATE; });
+
+          video.addEventListener('ended', reveal, { once: true });
+          /* autoplay blocked, a 404, or a stalled decode must never trap the
+             headline — or leave the window hidden for good */
+          failsafe = setTimeout(showNow, 12000);
+          const play = video.play();
+          if (play && play.catch) play.catch(reveal);
+        }
 
         if (!reduce) {
           btnRefs.current.forEach((btn) => {
@@ -90,7 +158,11 @@ export default function Hero() {
           });
         }
 
-        return () => split.revert();
+        return () => {
+          clearTimeout(failsafe);
+          if (onTime && videoRef.current) videoRef.current.removeEventListener('timeupdate', onTime);
+          split.revert();
+        };
       }
     );
 
@@ -98,10 +170,23 @@ export default function Hero() {
   }, { scope: root });
 
   return (
+    <>
     <section className="hero" id="top" ref={root}>
-      <div className="wrap">
-        <div className="hero-panel grain">
-          <div className="hero-mesh" aria-hidden="true" />
+      <video
+        ref={videoRef}
+        className="hero-video"
+        muted
+        playsInline
+        preload="metadata"
+        poster="/hero-poster.jpg"
+        aria-hidden="true"
+      >
+        <source src="/hero.mp4" type="video/mp4" />
+      </video>
+      <div className="hero-scrim" aria-hidden="true" />
+
+      <div className="wrap hero-inner">
+        <div className="hero-head">
           <p className="eyebrow">Work simulations for hiring</p>
           <h1 className="h1">
             Hire for the <em>work,</em> not the interview.
@@ -120,7 +205,20 @@ export default function Hero() {
           </p>
         </div>
 
-        <div className="replay">
+        <ul className="hero-notes">
+          {DIMENSIONS.map((d) => (
+            <li className="hero-note-item" key={d.k}>
+              <i style={{ background: d.hue }} />
+              <span><b>{d.k}</b>{d.s}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section className="hero-after">
+      <div className="wrap">
+        <div className="replay" ref={replayRef}>
           <div className="replay-frame">
             <div className="replay-bar">
               <span className="replay-dots"><i /><i /><i /></span>
@@ -158,5 +256,6 @@ export default function Hero() {
         </div>
       </div>
     </section>
+    </>
   );
 }

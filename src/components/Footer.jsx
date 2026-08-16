@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="foot-inner">
           <div className="foot-brand">
             <a className="brand" href="#top">
-              <img src={`${import.meta.env.BASE_URL}truly-logo.png`} alt="" />
+              <img src={`${import.meta.env.BASE_URL}truly-mark.png`} alt="" />
               Truly
             </a>
             <p>Hiring talent through job-specific work simulations.</p>

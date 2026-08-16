@@ -15,7 +15,7 @@ export default function Nav() {
     <header className={`nav${scrolled ? ' scrolled' : ''}`}>
       <div className="wrap nav-inner">
         <a className="brand" href="#top">
-          <img src={`${import.meta.env.BASE_URL}truly-logo.png`} alt="" />
+          <img src={`${import.meta.env.BASE_URL}truly-mark.png`} alt="" />
           Truly
         </a>
         <nav className="nav-links">
