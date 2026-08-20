@@ -834,7 +834,7 @@ button { font-family: inherit; }
   overflow: hidden;
 }
 
-/* --- OCR: a terminal being read, line by line --- */
+/* --- Interface: a terminal being read, line by line --- */
 .av-term-bar {
   display: flex; gap: 4px; padding: 7px 9px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -941,7 +941,7 @@ button { font-family: inherit; }
 }
 @keyframes avPulse { 0%, 82%, 100% { opacity: 0.35; } 88% { opacity: 1; box-shadow: 0 0 0 3px color-mix(in srgb, var(--hue) 30%, transparent); } }
 
-/* --- Repository: what grew, what went --- */
+/* --- Code: what grew, what went --- */
 .av-diff { padding: 10px 11px 11px; }
 .av-diff-file { font: 400 9px var(--mono); color: #8C877A; margin-bottom: 8px; }
 .av-row { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }

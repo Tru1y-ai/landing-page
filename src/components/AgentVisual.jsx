@@ -5,7 +5,7 @@
  * All motion is CSS keyframes; see `.av-*` in index.css.
  */
 
-function Ocr() {
+function Screen() {
   return (
     // a terminal being read line by line
     <div className="av-plate av-term">
@@ -20,7 +20,7 @@ function Ocr() {
   );
 }
 
-function Vision() {
+function Session() {
   return (
     // a screen recording being sampled: frames pulled off the capture at
     // a fixed interval and stacked back into depth as they age
@@ -49,12 +49,12 @@ function Vision() {
         <div className="av-shutter" />
       </div>
       <div className="av-scrub"><i /></div>
-      <div className="av-tick"><span className="av-tick-dot" />frame every 20s</div>
+      <div className="av-tick"><span className="av-tick-dot" />sampled continuously</div>
     </div>
   );
 }
 
-function Repo() {
+function Code() {
   return (
     // a diff: what grew, what went
     <div className="av-plate av-diff">
@@ -90,9 +90,9 @@ function Ai() {
 }
 
 const MAP = {
-  ocr: Ocr,
-  vision: Vision,
-  repo: Repo,
+  screen: Screen,
+  session: Session,
+  code: Code,
   ai: Ai,
 };
 
