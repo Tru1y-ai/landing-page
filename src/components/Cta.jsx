@@ -1,5 +1,5 @@
 import Reveal from './Reveal.jsx';
-import { CAL_URL } from '../links.js';
+import { CAL_URL, CONTACT_EMAIL } from '../links.js';
 
 export default function Cta() {
   return (
@@ -15,6 +15,9 @@ export default function Cta() {
             <div className="cta-actions">
               <a className="btn btn-ink" href={CAL_URL} target="_blank" rel="noopener noreferrer">
                 Book a 30-min demo
+              </a>
+              <a className="btn btn-glass" href={`mailto:${CONTACT_EMAIL}`}>
+                Contact us
               </a>
             </div>
           </Reveal>

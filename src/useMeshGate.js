@@ -17,7 +17,7 @@ import { useEffect } from 'react';
  * Bails out to running when IntersectionObserver is missing: a gate that can
  * fail to arrive would leave every backdrop frozen.
  */
-const MESHES = '.hero-mesh, .step-mesh, .pipe-meta-mesh, .cta-mesh';
+const MESHES = '.step-mesh, .pipe-meta-mesh, .cta-mesh, .fan-mesh, .fan-edge';
 
 export default function useMeshGate() {
   useEffect(() => {

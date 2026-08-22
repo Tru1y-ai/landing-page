@@ -7,10 +7,10 @@ import AgentVisual from './AgentVisual.jsx';
 // find it. The mechanism is not the pitch, and it is not something a landing
 // page should hand to a competitor.
 const EXTRACTORS = [
-  { name: 'Session activity', hue: 'var(--moss)', role: 'What was opened, run, and changed', kind: 'ocr' },
-  { name: 'Working process', hue: 'var(--teal)', role: 'How the approach evolved', kind: 'vision' },
-  { name: 'Code and changes', hue: 'var(--plum)', role: 'What the work produced', kind: 'repo' },
-  { name: 'AI collaboration', hue: 'var(--amber)', role: 'Whether output was checked or taken', kind: 'ai' },
+  { name: 'Interface', hue: 'var(--moss)', role: "Reads what's on screen", kind: 'screen' },
+  { name: 'Session', hue: 'var(--teal)', role: 'Watches the work unfold', kind: 'session' },
+  { name: 'Code', hue: 'var(--plum)', role: 'Tracks what changed', kind: 'code' },
+  { name: 'AI work', hue: 'var(--amber)', role: 'Follows the exchange', kind: 'ai' },
 ];
 
 const TIMELINE = [
@@ -150,8 +150,8 @@ export default function Pipeline() {
                   ))}
                 </div>
                 <p className="pipe-note">
-                  Stored as an evidence graph — permanent, queryable, and the source every
-                  score is later held to.
+                  Stored as permanent, queryable evidence — the source every score is
+                  later held to.
                 </p>
               </div>
             </div>
@@ -167,7 +167,7 @@ export default function Pipeline() {
             <h3 className="pipe-h">One evaluator per competency</h3>
             <p className="pipe-p">
               Each evaluator sees only the evidence relevant to it — the debugging
-              evaluator never reads browser history — then a meta evaluator synthesizes
+              evaluator never reads unrelated signals — then a meta evaluator synthesizes
               the verdict from their scores alone.
             </p>
             <div className="pipe-comp-grid">
