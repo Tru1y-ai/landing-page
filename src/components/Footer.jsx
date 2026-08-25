@@ -14,13 +14,13 @@ export default function Footer() {
           </div>
           <div className="foot-links">
             <div className="foot-col">
-              <h4>Product</h4>
+              <h3>Product</h3>
               <a href="#how">How it works</a>
               <a href="#why">Why Truly</a>
               <a href="#pricing">Pricing</a>
             </div>
             <div className="foot-col">
-              <h4>Company</h4>
+              <h3>Company</h3>
               <a href="#faq">FAQ</a>
               <a href={CAL_URL} target="_blank" rel="noopener noreferrer">Book a demo</a>
               <a href={`mailto:${CONTACT_EMAIL}`}>Contact us</a>

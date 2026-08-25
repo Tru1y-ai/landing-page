@@ -8,4 +8,11 @@ export default defineConfig({
   plugins: [
     react(),
   ],
+  // Build-time prerender only (vite build --ssr). GSAP ships CommonJS, so
+  // leaving it external makes Node resolve `import { SplitText }` against a
+  // module that has no named exports. Bundling it through Vite's transform
+  // fixes the interop. This key does not touch the client build.
+  ssr: {
+    noExternal: ['gsap', '@gsap/react', 'framer-motion'],
+  },
 })

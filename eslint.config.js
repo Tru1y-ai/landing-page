@@ -4,7 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactPlugin from 'eslint-plugin-react'
 
 export default [
-  { ignores: ['dist'] },
+  { ignores: ['dist', 'dist-ssr'] },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {

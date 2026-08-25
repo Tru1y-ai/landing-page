@@ -1,9 +1,13 @@
 import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { hydrateRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 
-createRoot(document.getElementById('root')).render(
+/* hydrateRoot, not createRoot: the build prerenders App into #root (see
+   scripts/prerender.js), and createRoot would throw that markup away and
+   repaint. Hydrating adopts it instead, so there is no flash. */
+hydrateRoot(
+  document.getElementById('root'),
   <StrictMode>
     <App />
   </StrictMode>,

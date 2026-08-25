@@ -10,6 +10,12 @@
     <!-- One page, one address. Without this, trulyta.com/, /?utm_source=…,
          and the tru1y-ai.github.io origin are three URLs serving identical
          content and the ranking signals split between them. -->
+    <!-- The poster is the hero's first paint, and the 3.8 MB film alongside it
+         is requested with preload="auto". Without this the poster queues behind
+         that download; the preload just reorders the two, it changes nothing
+         about what renders. -->
+    <link rel="preload" as="image" href="/hero-poster.jpg" fetchpriority="high" />
+
     <link rel="canonical" href="https://trulyta.com/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
 
@@ -36,12 +42,15 @@
     <meta name="twitter:image:alt" content="Truly — hire for the work, not the interview." />
     <meta name="theme-color" content="#14563E" />
 
-    <!-- The page is client-rendered, so a crawler that does not run JS sees an
-         empty <div id="root">. These blocks put the brand, the product and the
-         FAQ in the HTML itself, where every crawler can read them.
+    <!-- The build prerenders the whole page into the mount below
+         (scripts/prerender.js), so the copy is in the document itself for the
+         crawlers that never run JS — most AI crawlers included. These blocks
+         restate the same facts in machine-readable form.
          The Q&A text is copied verbatim from src/components/Faq.jsx —
          structured data that does not match the visible page is a violation,
-         so if the FAQ copy changes, this has to change with it. -->
+         so if the FAQ copy changes, this has to change with it.
+         FAQPage earns no SERP feature since Google retired FAQ rich results in
+         May 2026; it stays as plain description, not for display. -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -71,8 +80,28 @@
           "publisher": { "@id": "https://trulyta.com/#org" },
           "description": "Job-specific work simulations for hiring. Candidates work on their own machine; AI evaluators analyze the full session and return rubric-scored, evidence-backed reports.",
           "offers": [
-            { "@type": "Offer", "name": "Starter", "price": "99", "priceCurrency": "USD" },
-            { "@type": "Offer", "name": "Pro", "price": "399", "priceCurrency": "USD" }
+            {
+              "@type": "Offer",
+              "name": "Starter",
+              "priceCurrency": "USD",
+              "priceSpecification": {
+                "@type": "UnitPriceSpecification",
+                "price": "99",
+                "priceCurrency": "USD",
+                "referenceQuantity": { "@type": "QuantitativeValue", "value": "1", "unitCode": "MON" }
+              }
+            },
+            {
+              "@type": "Offer",
+              "name": "Pro",
+              "priceCurrency": "USD",
+              "priceSpecification": {
+                "@type": "UnitPriceSpecification",
+                "price": "399",
+                "priceCurrency": "USD",
+                "referenceQuantity": { "@type": "QuantitativeValue", "value": "1", "unitCode": "MON" }
+              }
+            }
           ]
         },
         {

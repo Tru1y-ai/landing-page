@@ -785,7 +785,7 @@ button { font-family: inherit; }
 .foot-inner { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 36px; }
 .foot-brand p { margin-top: 12px; font-size: 14px; color: var(--muted); max-width: 26ch; }
 .foot-links { display: flex; gap: 56px; flex-wrap: wrap; }
-.foot-col h4 { font: 500 11px var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 14px; }
+.foot-col h3 { font: 500 11px var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 14px; }
 .foot-col a { display: block; font-size: 14px; color: var(--muted); margin-bottom: 9px; transition: color .2s; }
 .foot-col a:hover { color: var(--ink); }
 .foot-bot {
